@@ -8,7 +8,6 @@ use crate::network::Network;
 pub struct RepoResponse {
 	/// Repository name
 	name: String,
-
 	/// Web URL of the repository on GitHub
 	html_url: String,
 }
