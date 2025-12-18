@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/orgs/heroesofcode/repos"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "name": "ViewState"
+      },
+      {
+        "name": "DataLife"
+      }
+    ],
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "fixedDelayMilliseconds": 2000
+  }
+}
