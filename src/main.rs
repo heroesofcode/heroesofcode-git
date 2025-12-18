@@ -23,7 +23,7 @@ async fn main() -> Result<(), reqwest::Error> {
 
 	match args.command {
 		Some(Command::Repos) => {
-			Repos::response().await?;
+			Repos::list_all().await?;
 		}
 		Some(Command::Clone) => {
 			println!("Clone some project");
