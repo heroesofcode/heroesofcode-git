@@ -7,10 +7,12 @@
     "status": 200,
     "jsonBody": [
       {
-        "name": "ViewState"
+        "name": "ViewState",
+        "html_url": "https://github.com/heroesofcode/ViewState"
       },
       {
-        "name": "DataLife"
+        "name": "DataLife",
+        "html_url": "https://github.com/heroesofcode/DataLife"
       }
     ],
     "headers": {
