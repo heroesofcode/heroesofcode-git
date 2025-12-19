@@ -42,8 +42,8 @@ impl Clone {
 		let selected = multi_select.run().expect("error running multi select");
 
 		for url in selected {
-			if let Err(e) = Self::clone_repo(&url) {
-				println!("❌ Error cloning {url}: {e}");
+			if let Err(error) = Self::clone_repo(&url) {
+				println!("❌ Error cloning {url}: {error}");
 				println!();
 			} else {
 				println!("✅ Success in cloning {url}");
