@@ -32,4 +32,14 @@ impl Network {
 		let response = response.error_for_status()?;
 		response.json::<T>().await
 	}
+
+	/// Resolves the base API URL based on the build environment
+	/// Uses localhost in debug and GitHub API in release
+	pub fn base_url(&self) -> &'static str {
+		if cfg!(debug_assertions) {
+			"http://localhost:3001"
+		} else {
+			"https://api.github.com"
+		}
+	}
 }
