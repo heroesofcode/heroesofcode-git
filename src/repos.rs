@@ -39,12 +39,8 @@ impl Repos {
 	/// Requests the repository list from the API
 	pub async fn response() -> Result<Vec<RepoResponse>, reqwest::Error> {
 		let network = Network::new();
-
-		// TODO: Validate URL based on Dev or Release environment
-		// let url = "https://api.github.com/orgs/heroesofcode/repos";
-		let url = "http://localhost:3001/orgs/heroesofcode/repos";
-
-		let result: Vec<RepoResponse> = network.get_json(url).await?;
+		let url = format!("{}/orgs/heroesofcode/repos", network.base_url());
+		let result: Vec<RepoResponse> = network.get_json(&url).await?;
 		Ok(result)
 	}
 
