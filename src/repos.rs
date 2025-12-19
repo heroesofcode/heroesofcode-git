@@ -7,9 +7,9 @@ use crate::network::Network;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RepoResponse {
 	/// Repository name
-	name: String,
+	pub name: String,
 	/// Web URL of the repository on GitHub
-	html_url: String,
+	pub html_url: String,
 }
 
 /// Repository operations handler

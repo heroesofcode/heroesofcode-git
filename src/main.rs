@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 
+use heroesofcode_git::clone::Clone;
 use heroesofcode_git::repos::Repos;
 
 #[derive(Parser)]
@@ -26,7 +27,7 @@ async fn main() -> Result<(), reqwest::Error> {
 			Repos::list_all().await?;
 		}
 		Some(Command::Clone) => {
-			println!("Clone some project");
+			Clone::clone_repos().await?;
 		}
 		None => {
 			println!("Run --help");
