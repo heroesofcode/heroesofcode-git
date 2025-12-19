@@ -22,13 +22,13 @@ impl Repos {
 	pub async fn list_all() -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
-		term.write_line("🔥 Searching all repositories...").ok();
+		term.write_line("🔥 searching all repositories...").ok();
 
 		match Self::response().await {
 			Ok(result) => {
 				term.clear_last_lines(1).ok();
 				term
-					.write_line(&format!("{} Repositories founded", "✓".green()))
+					.write_line(&format!("{} repositories founded", "✓".green()))
 					.ok();
 
 				println!();
@@ -38,7 +38,7 @@ impl Repos {
 			Err(error) => {
 				term.clear_last_lines(1).ok();
 				term
-					.write_line(&format!("❌ Error listing repositories: {error}"))
+					.write_line(&format!("❌ error listing repositories: {error}"))
 					.ok();
 				Err(error)
 			}
