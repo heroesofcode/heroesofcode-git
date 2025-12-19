@@ -6,7 +6,7 @@ This tool is intended primarily for Heroes of Code maintainers. However, contrib
 
 ## Demo
 
-<img src="https://github.com/heroesofcode/heroesofcode-git/blob/feature/add-documentantion-and-tests/example.gif" />
+<img src="https://github.com/heroesofcode/heroesofcode-git/blob/main/example.gif" />
 
 ```sh
 > cargo install --git https://github.com/heroesofcode/heroesofcode-git
@@ -18,5 +18,5 @@ List all repositories
 
 Clone repositories
 ```sh
-> heroesofcode-git clones
+> heroesofcode-git clone
 ```
