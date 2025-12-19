@@ -55,7 +55,7 @@ impl Clone {
 	/// Clones a repository into the local organization directory
 	fn clone_repo(url: &str) -> Result<(), String> {
 		let base = Path::new("heroesofcode");
-		fs::create_dir_all(base).map_err(|e| e.to_string())?;
+		fs::create_dir_all(base).map_err(|error| error.to_string())?;
 
 		let name = url.rsplit('/').next().ok_or("invalid url")?;
 		let full_url = format!("{url}.git");
