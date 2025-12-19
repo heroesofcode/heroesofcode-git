@@ -1,18 +1,23 @@
 name: CI
-
-on:
-  pull_request:
-    branches: [ "main" ]
-
-env:
-  CARGO_TERM_COLOR: always
+on: [pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Mise install
+        uses: jdx/mise-action@a14eb4219a6a90e17ff63c8fce4ac9009accd7e5
+        with:
+          cache: true
+          experimental: true
+
+      - uses: Swatinem/rust-cache@5e4a76743357a1c3c57315bc1896d2c7f89d6861
+
+      - name: Run build
+        run: mise build
+
+      - name: Run tests
+        run: mise test
