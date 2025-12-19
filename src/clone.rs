@@ -1,5 +1,11 @@
+use colored::Colorize;
+use console::Term;
 use demand::{DemandOption, MultiSelect};
-use std::{fs, path::Path, process::Command};
+use std::{
+	fs,
+	path::Path,
+	process::{Command, Stdio},
+};
 
 use crate::repos::{RepoResponse, Repos};
 
@@ -10,26 +16,33 @@ impl Clone {
 	/// Fetches repositories and starts the interactive clone flow
 	pub async fn clone_repos() -> Result<(), reqwest::Error> {
 		println!();
-		println!("🔥 Searching all repositories");
+		let term = Term::stdout();
+		term.write_line("🔥 searching all repositories...").ok();
 
 		match Repos::response().await {
 			Ok(repos) => {
-				println!("✅ All repositories with success");
-				println!();
-				Self::multi_select_validation(repos);
+				term.clear_last_lines(1).ok();
+				term
+					.write_line(&format!("{} repositories founded", "✓".green()))
+					.ok();
+
+				Self::multi_select_validation(repos, term);
 				println!();
 
 				Ok(())
 			}
 			Err(error) => {
-				eprintln!("❌ Error listing repositories: {}", error);
+				term.clear_last_lines(1).ok();
+				term
+					.write_line(&format!("❌ listing repositories: {error}"))
+					.ok();
 				Err(error)
 			}
 		}
 	}
 
 	/// Displays a multi-select prompt for repository selection
-	fn multi_select_validation(repos: Vec<RepoResponse>) {
+	fn multi_select_validation(repos: Vec<RepoResponse>, term: Term) {
 		let mut multi_select = MultiSelect::new("Repositories")
 			.description("Select the repositories you want to clone")
 			.min(1)
@@ -43,11 +56,12 @@ impl Clone {
 
 		for url in selected {
 			if let Err(error) = Self::clone_repo(&url) {
-				println!("❌ Error cloning {url}: {error}");
+				println!("❌ cloning {url}: {error}");
 				println!();
 			} else {
-				println!("✅ Success in cloning {url}");
-				println!();
+				term
+					.write_line(&format!("{} cloning {url}", "✓".green()))
+					.ok();
 			}
 		}
 	}
@@ -61,12 +75,14 @@ impl Clone {
 		let full_url = format!("{url}.git");
 
 		if base.join(name).exists() {
-			return Err("Repository already exists".into());
+			return Err("repository already exists".into());
 		}
 
 		Command::new("git")
 			.args(["clone", &full_url])
 			.current_dir(base)
+			.stdout(Stdio::null())
+			.stderr(Stdio::null())
 			.status()
 			.map_err(|e| e.to_string())?
 			.success()

@@ -1,4 +1,6 @@
+use colored::Colorize;
 use comfy_table::Table;
+use console::Term;
 use serde::{Deserialize, Serialize};
 
 use crate::network::Network;
@@ -19,18 +21,25 @@ impl Repos {
 	/// Fetches and displays all repositories in a table
 	pub async fn list_all() -> Result<(), reqwest::Error> {
 		println!();
-		println!("🔥 Searching all repositories");
+		let term = Term::stdout();
+		term.write_line("🔥 Searching all repositories...").ok();
 
 		match Self::response().await {
 			Ok(result) => {
-				println!("✅ All repositories with success");
-				println!();
+				term.clear_last_lines(1).ok();
+				term
+					.write_line(&format!("{} Repositories founded", "✓".green()))
+					.ok();
 
+				println!();
 				Self::show_table(&result);
 				Ok(())
 			}
 			Err(error) => {
-				eprintln!("❌ Error listing repositories: {}", error);
+				term.clear_last_lines(1).ok();
+				term
+					.write_line(&format!("❌ Error listing repositories: {error}"))
+					.ok();
 				Err(error)
 			}
 		}
