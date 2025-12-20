@@ -2,6 +2,11 @@
 name = "heroesofcode-git"
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
+authors = ["João Lucas <joaolucasfp2001@gmail.com>"]
+description = "CLI designed to manage and clone repositories from the Heroes of Code organization."
+readme = "README.md"
+repository = "https://github.com/heroesofcode/heroesofcode-git"
 
 [dependencies]
 reqwest = { version = "0.12.26", features = ["json"] }
