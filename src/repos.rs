@@ -38,7 +38,10 @@ impl Repos {
 			Err(error) => {
 				term.clear_last_lines(1).ok();
 				term
-					.write_line(&format!("❌ error listing repositories: {error}"))
+					.write_line(&format!(
+						"{} error listing repositories: {error}",
+						"˟".red()
+					))
 					.ok();
 				Err(error)
 			}
