@@ -1,9 +1,8 @@
-use colored::Colorize;
 use comfy_table::Table;
 use console::Term;
 use serde::{Deserialize, Serialize};
 
-use crate::network::Network;
+use crate::{cli_output::CliOutput, network::Network};
 
 /// GitHub repository response model
 #[derive(Debug, Serialize, Deserialize)]
@@ -27,22 +26,16 @@ impl Repos {
 		match Self::response().await {
 			Ok(result) => {
 				term.clear_last_lines(1).ok();
-				term
-					.write_line(&format!("{} repositories founded", "✓".green()))
-					.ok();
-
+				CliOutput::success(&term, format!("repositories founded"));
 				println!();
 				Self::show_table(&result);
+
 				Ok(())
 			}
 			Err(error) => {
 				term.clear_last_lines(1).ok();
-				term
-					.write_line(&format!(
-						"{} error listing repositories: {error}",
-						"˟".red()
-					))
-					.ok();
+				CliOutput::error(&term, format!("listing repositories: {error}"));
+
 				Err(error)
 			}
 		}
