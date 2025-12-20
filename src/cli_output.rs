@@ -13,8 +13,6 @@ impl CliOutput {
 	}
 
 	pub fn error(term: &Term, message: String) {
-		term
-			.write_line(&format!("{} listing repositories: {}", "˟".red(), message))
-			.ok();
+		term.write_line(&format!("{} {}", "˟".red(), message)).ok();
 	}
 }
