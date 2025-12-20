@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use colored::Colorize;
 
 use crate::clone::Clone;
 use crate::repos::Repos;
@@ -33,7 +34,7 @@ impl Cli {
 				Clone::clone_repos().await?;
 			}
 			None => {
-				println!("Run --help");
+				println!("Run {}", "heroesofcode --help".blue());
 			}
 		}
 

@@ -1,4 +1,3 @@
-use colored::Colorize;
 use console::Term;
 use demand::{DemandOption, MultiSelect};
 use std::{
@@ -7,7 +6,10 @@ use std::{
 	process::{Command, Stdio},
 };
 
-use crate::repos::{RepoResponse, Repos};
+use crate::{
+	cli_output::CliOutput,
+	repos::{RepoResponse, Repos},
+};
 
 /// Handles repository cloning flow
 pub struct Clone;
@@ -22,27 +24,23 @@ impl Clone {
 		match Repos::response().await {
 			Ok(repos) => {
 				term.clear_last_lines(1).ok();
-				term
-					.write_line(&format!("{} repositories founded", "✓".green()))
-					.ok();
-
-				Self::multi_select_validation(repos, term);
+				CliOutput::success(&term, &format!("repositories found"));
+				Self::multi_select_validation(repos, &term);
 				println!();
 
 				Ok(())
 			}
 			Err(error) => {
 				term.clear_last_lines(1).ok();
-				term
-					.write_line(&format!("{} listing repositories: {error}", "˟".red()))
-					.ok();
+				CliOutput::error(&term, &format!("listing repositories: {error}"));
+
 				Err(error)
 			}
 		}
 	}
 
 	/// Displays a multi-select prompt for repository selection
-	fn multi_select_validation(repos: Vec<RepoResponse>, term: Term) {
+	fn multi_select_validation(repos: Vec<RepoResponse>, term: &Term) {
 		let mut multi_select = MultiSelect::new("Repositories")
 			.description("Select the repositories you want to clone")
 			.min(1)
@@ -56,12 +54,10 @@ impl Clone {
 
 		for url in selected {
 			if let Err(error) = Self::clone_repo(&url) {
-				println!("{}", format!("{} cloning {url}: {error}", "˟".red()));
+				CliOutput::error(term, &format!("cloning {url}: {error}"));
 				println!();
 			} else {
-				term
-					.write_line(&format!("{} cloning {url}", "✓".green()))
-					.ok();
+				CliOutput::success(term, &format!("cloning {url}"));
 			}
 		}
 	}
