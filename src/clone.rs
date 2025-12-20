@@ -34,7 +34,7 @@ impl Clone {
 			Err(error) => {
 				term.clear_last_lines(1).ok();
 				term
-					.write_line(&format!("❌ listing repositories: {error}"))
+					.write_line(&format!("{} listing repositories: {error}", "˟".red()))
 					.ok();
 				Err(error)
 			}
@@ -56,7 +56,7 @@ impl Clone {
 
 		for url in selected {
 			if let Err(error) = Self::clone_repo(&url) {
-				println!("❌ cloning {url}: {error}");
+				println!("{}", format!("{} cloning {url}: {error}", "˟".red()));
 				println!();
 			} else {
 				term
