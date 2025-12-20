@@ -1,4 +1,3 @@
-use colored::Colorize;
 use console::Term;
 use demand::{DemandOption, MultiSelect};
 use std::{
@@ -25,7 +24,7 @@ impl Clone {
 		match Repos::response().await {
 			Ok(repos) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::success(&term, format!("repositories founded"));
+				CliOutput::success(&term, &format!("repositories found"));
 				Self::multi_select_validation(repos, &term);
 				println!();
 
@@ -33,7 +32,7 @@ impl Clone {
 			}
 			Err(error) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::error(&term, format!("listing repositories: {error}"));
+				CliOutput::error(&term, &format!("listing repositories: {error}"));
 
 				Err(error)
 			}
@@ -55,10 +54,10 @@ impl Clone {
 
 		for url in selected {
 			if let Err(error) = Self::clone_repo(&url) {
-				println!("{}", format!("{} cloning {url}: {error}", "˟".red()));
+				CliOutput::error(term, &format!("cloning {url}: {error}"));
 				println!();
 			} else {
-				CliOutput::success(term, format!("cloning {url}"));
+				CliOutput::success(term, &format!("cloning {url}"));
 			}
 		}
 	}

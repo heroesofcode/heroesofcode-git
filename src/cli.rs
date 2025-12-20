@@ -34,7 +34,7 @@ impl Cli {
 				Clone::clone_repos().await?;
 			}
 			None => {
-				println!("Run {}", format!("{}", "heroesofcode --help".blue()));
+				println!("Run {}", "heroesofcode --help".blue());
 			}
 		}
 

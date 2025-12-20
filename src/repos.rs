@@ -26,7 +26,7 @@ impl Repos {
 		match Self::response().await {
 			Ok(result) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::success(&term, format!("repositories founded"));
+				CliOutput::success(&term, "repositories found");
 				println!();
 				Self::show_table(&result);
 
@@ -34,7 +34,7 @@ impl Repos {
 			}
 			Err(error) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::error(&term, format!("listing repositories: {error}"));
+				CliOutput::error(&term, &format!("listing repositories: {error}"));
 
 				Err(error)
 			}
