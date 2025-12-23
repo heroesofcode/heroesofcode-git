@@ -5,6 +5,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      pull-requests: write
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
@@ -15,32 +18,47 @@ jobs:
           cache: true
           experimental: true
 
-      - name: 🦀 Rust cache
+      - name: 🦀 Restore Rust cache
         uses: Swatinem/rust-cache@5e4a76743357a1c3c57315bc1896d2c7f89d6861
 
       - name: 🧪 Run tests
+        id: tests
         run: mise test
-        
-      - name: 💬 Comment test success
-        if: success()
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "🎉 **All unit tests passed!** ✅"
-            })
 
-      - name: 💬 Comment test failure
-        if: failure()
+      # 🔁 Create or update PR comment with test result
+      - name: 💬 Report test result in PR
+        if: always()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const passed = '${{ steps.tests.outcome }}' === 'success';
+
+            const body = passed
+              ? '🎉 **All unit tests passed!** ✅'
+              : '💥 **Unit tests failed. Please check the CI logs.** ❌';
+
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "💥 **Unit tests failed. Please check the CI logs.** ❌"
-            })
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('unit tests')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
