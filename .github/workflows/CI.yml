@@ -41,13 +41,21 @@ jobs:
 
             let body;
 
-            if (testOutcome === 'success' && buildOutcome === 'success') {
-              body = `${marker}\n🎉 **All unit tests passed!** ✅`;
-            } else if (testOutcome === 'success' && buildOutcome === 'failure') {
-              body = `${marker}\n⚠️ **Unit tests passed, but the build step failed. Please check the CI logs.**`;
+            if (testOutcome === 'success') {
+              if (buildOutcome === 'success') {
+                body = `${marker}\n🎉 **All unit tests passed!** ✅`;
+              } else if (buildOutcome === 'failure') {
+                body = `${marker}\n⚠️ **Unit tests passed, but the build step failed. Please check the CI logs.**`;
+              } else {
+                body = `${marker}\n⚠️ **All unit tests passed, but the build step had outcome: \`${buildOutcome}\`. Please check the CI logs.**`;
+              }
             } else if (testOutcome === 'failure') {
               if (buildOutcome === 'failure') {
                 body = `${marker}\n💥 **Build and unit tests failed. Please check the CI logs.** ❌`;
+              } else if (buildOutcome === 'cancelled') {
+                body = `${marker}\n⚠️ **Build was cancelled, but unit tests reported failures. Please check the CI logs.** ⏹️❌`;
+              } else if (buildOutcome === 'skipped') {
+                body = `${marker}\n⚠️ **Build was skipped, but unit tests reported failures. Please check the CI logs.** ⏭️❌`;
               } else {
                 body = `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
               }
@@ -71,7 +79,6 @@ jobs:
               });
 
               const botComment = comments.find(c =>
-                c.user?.type === 'Bot' &&
                 c.user?.login === 'github-actions[bot]' &&
                 typeof c.body === 'string' &&
                 c.body.includes(marker)
