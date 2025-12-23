@@ -29,17 +29,33 @@ jobs:
         id: tests
         run: mise test
 
-      - name: 💬 Report test result in PR
+      - name: 💬 Report CI result in PR
         if: always()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
           script: |
             const marker = '<!-- ci:unit-tests -->';
-            const passed = '${{ steps.tests.outcome }}' === 'success';
 
-            const body = passed
-              ? `${marker}\n🎉 **All unit tests passed!** ✅`
-              : `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
+            const buildOutcome = '${{ steps.build.outcome }}';
+            const testOutcome  = '${{ steps.tests.outcome }}';
+
+            let body;
+
+            if (testOutcome === 'success') {
+              body = `${marker}\n🎉 **All unit tests passed!** ✅`;
+            } else if (testOutcome === 'failure') {
+              body = `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
+            } else if (testOutcome === 'cancelled') {
+              body = `${marker}\n⚠️ **Unit tests were cancelled.** ⏹️`;
+            } else if (testOutcome === 'skipped') {
+              if (buildOutcome === 'failure') {
+                body = `${marker}\n⚠️ **Unit tests were skipped because the build step failed.** 🏗️❌`;
+              } else {
+                body = `${marker}\n⚠️ **Unit tests were skipped.**`;
+              }
+            } else {
+              body = `${marker}\n⚠️ **Unknown test status. Please check the CI logs.**`;
+            }
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -48,7 +64,9 @@ jobs:
             });
 
             const botComment = comments.find(c =>
-              c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker)
+              c.user?.type === 'Bot' &&
+              typeof c.body === 'string' &&
+              c.body.includes(marker)
             );
 
             if (botComment) {
