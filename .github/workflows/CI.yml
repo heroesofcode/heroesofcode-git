@@ -100,5 +100,5 @@ jobs:
                 });
               }
             } catch (error) {
-              core.setFailed(`Failed to report CI result in PR comment: ${error?.message || error}`);
+              core.setFailed(`Failed to report CI result in PR comment: ${error.message || String(error)}`);
             }
