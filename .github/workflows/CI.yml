@@ -21,6 +21,10 @@ jobs:
       - name: 🦀 Restore Rust cache
         uses: Swatinem/rust-cache@5e4a76743357a1c3c57315bc1896d2c7f89d6861
 
+      - name: 🏗️ Build
+        id: build
+        run: mise build
+
       - name: 🧪 Run tests
         id: tests
         run: mise test
