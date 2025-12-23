@@ -25,17 +25,17 @@ jobs:
         id: tests
         run: mise test
 
-      # 🔁 Create or update PR comment with test result
       - name: 💬 Report test result in PR
         if: always()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
           script: |
+            const marker = '<!-- ci:unit-tests -->';
             const passed = '${{ steps.tests.outcome }}' === 'success';
 
             const body = passed
-              ? '🎉 **All unit tests passed!** ✅'
-              : '💥 **Unit tests failed. Please check the CI logs.** ❌';
+              ? `${marker}\n🎉 **All unit tests passed!** ✅`
+              : `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -44,7 +44,7 @@ jobs:
             });
 
             const botComment = comments.find(c =>
-              c.user.type === 'Bot' && c.body.includes('unit tests')
+              c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker)
             );
 
             if (botComment) {
