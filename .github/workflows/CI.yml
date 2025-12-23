@@ -5,19 +5,100 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    permissions:
+      pull-requests: write
 
-      - name: Mise install
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: 🔧 Setup tools (mise)
         uses: jdx/mise-action@bf7ce94bf71e42b9b3bb1350675aac847b7388c4
         with:
           cache: true
           experimental: true
 
-      - uses: Swatinem/rust-cache@5e4a76743357a1c3c57315bc1896d2c7f89d6861
+      - name: 🦀 Restore Rust cache
+        uses: Swatinem/rust-cache@5e4a76743357a1c3c57315bc1896d2c7f89d6861
 
-      - name: Run build
+      - name: 🏗️ Build
+        id: build
         run: mise build
 
-      - name: Run tests
+      - name: 🧪 Run tests
+        id: tests
         run: mise test
+
+      - name: 💬 Report CI result in PR
+        if: always()
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        with:
+          script: |
+            const marker = '<!-- ci:unit-tests -->';
+
+            const buildOutcome = '${{ steps.build.outcome }}';
+            const testOutcome  = '${{ steps.tests.outcome }}';
+
+            let body;
+
+            if (testOutcome === 'success') {
+              if (buildOutcome === 'success') {
+                body = `${marker}\n🎉 **All unit tests passed!** ✅`;
+              } else if (buildOutcome === 'failure') {
+                body = `${marker}\n⚠️ **Unit tests passed, but the build step failed. Please check the CI logs.**`;
+              } else {
+                body = `${marker}\n⚠️ **All unit tests passed, but the build step had outcome: \`${buildOutcome}\`. Please check the CI logs.**`;
+              }
+            } else if (testOutcome === 'failure') {
+              if (buildOutcome === 'failure') {
+                body = `${marker}\n💥 **Build and unit tests failed. Please check the CI logs.** ❌`;
+              } else if (buildOutcome === 'cancelled') {
+                body = `${marker}\n⚠️ **Build was cancelled, but unit tests reported failures. Please check the CI logs.** ⏹️❌`;
+              } else if (buildOutcome === 'skipped') {
+                body = `${marker}\n⚠️ **Build was skipped, but unit tests reported failures. Please check the CI logs.** ⏭️❌`;
+              } else {
+                body = `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
+              }
+            } else if (testOutcome === 'cancelled') {
+              body = `${marker}\n⚠️ **Unit tests were cancelled.** ⏹️`;
+            } else if (testOutcome === 'skipped') {
+              if (buildOutcome === 'failure') {
+                body = `${marker}\n⚠️ **Unit tests were skipped because the build step failed.** 🏗️❌`;
+              } else {
+                body = `${marker}\n⚠️ **Unit tests were skipped.**`;
+              }
+            } else {
+              body = `${marker}\n⚠️ **Unknown test status. Please check the CI logs.**`;
+            }
+
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+
+              const botComment = comments.find(c =>
+                c.user?.login === 'github-actions[bot]' &&
+                typeof c.body === 'string' &&
+                c.body.includes(marker)
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (error) {
+              core.setFailed(`Failed to report CI result in PR comment: ${error.message || String(error)}`);
+            }
