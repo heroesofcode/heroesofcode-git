@@ -41,8 +41,10 @@ jobs:
 
             let body;
 
-            if (testOutcome === 'success') {
+            if (testOutcome === 'success' && buildOutcome === 'success') {
               body = `${marker}\n🎉 **All unit tests passed!** ✅`;
+            } else if (testOutcome === 'success' && buildOutcome !== 'success') {
+              body = `${marker}\n⚠️ **Unit tests passed, but the build step did not succeed. Please check the CI logs.**`;
             } else if (testOutcome === 'failure') {
               body = `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
             } else if (testOutcome === 'cancelled') {
@@ -57,30 +59,35 @@ jobs:
               body = `${marker}\n⚠️ **Unknown test status. Please check the CI logs.**`;
             }
 
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const botComment = comments.find(c =>
-              c.user?.type === 'Bot' &&
-              typeof c.body === 'string' &&
-              c.body.includes(marker)
-            );
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body,
               });
+
+              const botComment = comments.find(c =>
+                c.user?.type === 'Bot' &&
+                c.user?.login === 'github-actions[bot]' &&
+                typeof c.body === 'string' &&
+                c.body.includes(marker)
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (error) {
+              core.setFailed(`Failed to report CI result in PR comment: ${error?.message || error}`);
             }
