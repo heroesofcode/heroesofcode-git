@@ -43,10 +43,14 @@ jobs:
 
             if (testOutcome === 'success' && buildOutcome === 'success') {
               body = `${marker}\n🎉 **All unit tests passed!** ✅`;
-            } else if (testOutcome === 'success' && buildOutcome !== 'success') {
-              body = `${marker}\n⚠️ **Unit tests passed, but the build step did not succeed. Please check the CI logs.**`;
+            } else if (testOutcome === 'success' && buildOutcome === 'failure') {
+              body = `${marker}\n⚠️ **Unit tests passed, but the build step failed. Please check the CI logs.**`;
             } else if (testOutcome === 'failure') {
-              body = `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
+              if (buildOutcome === 'failure') {
+                body = `${marker}\n💥 **Build and unit tests failed. Please check the CI logs.** ❌`;
+              } else {
+                body = `${marker}\n💥 **Unit tests failed. Please check the CI logs.** ❌`;
+              }
             } else if (testOutcome === 'cancelled') {
               body = `${marker}\n⚠️ **Unit tests were cancelled.** ⏹️`;
             } else if (testOutcome === 'skipped') {
