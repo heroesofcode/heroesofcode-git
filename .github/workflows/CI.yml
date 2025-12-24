@@ -24,26 +24,11 @@ jobs:
       - name: Run tests
         run: mise test
 
-      - name: Comment test success
-        if: success()
+      - name: 💬 Report CI result in PR
+        if: always()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
-          script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "🎉 **All unit tests passed!** ✅"
-            })
-
-      - name: Comment test failure
-        if: failure()
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "💥 **Unit tests failed. Please check the CI logs.** ❌"
-            })
+          script-path: .github/scripts/report-ci.js
+        env:
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
