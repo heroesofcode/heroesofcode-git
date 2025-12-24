@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
 
-      - name: 🔧 Setup tools (mise)
+      - name: Setup tools (mise)
         uses: jdx/mise-action@bf7ce94bf71e42b9b3bb1350675aac847b7388c4
         with:
           cache: true
@@ -22,13 +22,13 @@ jobs:
         uses: Swatinem/rust-cache@5e4a76743357a1c3c57315bc1896d2c7f89d6861
 
       - name: Run tests
+        id: tests
         run: mise test
 
-      - name: 💬 Report CI result in PR
+      - name: Report CI result in PR
         if: always()
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
           script-path: .github/scripts/report-ci.js
         env:
-          BUILD_OUTCOME: ${{ steps.build.outcome }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
