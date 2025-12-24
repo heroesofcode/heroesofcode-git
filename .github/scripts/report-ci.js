@@ -36,10 +36,43 @@ module.exports = async ({ github, context, process }) => {
         body = `${marker}\n⚠️ **Unknown test status. Please check the CI logs.**`;
     }
 
-    await github.rest.issues.createComment({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: context.issue.number,
-        body
-    });
+    // Prevent comment spam: update the existing marker comment if present
+    try {
+        const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+        });
+
+        const botComment = comments.find(c =>
+            c.user?.login === 'github-actions[bot]' &&
+            typeof c.body === 'string' &&
+            c.body.includes(marker)
+        );
+
+        if (botComment) {
+            await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+            });
+        } else {
+            await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+            });
+        }
+    } catch (error) {
+        // fallback: just make a comment, but also throw to surface error
+        await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body
+        });
+        throw error;
+    }
 };
