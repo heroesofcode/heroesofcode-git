@@ -32,11 +32,11 @@ impl Repos {
 
 				Ok(())
 			}
-			Err(error) => {
+			Err(e) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::error(&term, &format!("listing repositories: {error}"));
+				CliOutput::error(&term, &format!("listing repositories: {e}"));
 
-				Err(error)
+				Err(e)
 			}
 		}
 	}
