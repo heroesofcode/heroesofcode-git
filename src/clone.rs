@@ -30,11 +30,11 @@ impl Clone {
 
 				Ok(())
 			}
-			Err(error) => {
+			Err(e) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::error(&term, &format!("listing repositories: {error}"));
+				CliOutput::error(&term, &format!("listing repositories: {e}"));
 
-				Err(error)
+				Err(e)
 			}
 		}
 	}
@@ -50,14 +50,26 @@ impl Clone {
 			multi_select = multi_select.option(DemandOption::new(repo.html_url).label(&repo.name));
 		}
 
-		let selected = multi_select.run().expect("error running multi select");
+		let selected = match multi_select.run() {
+			Ok(selection) => selection,
+			Err(e) => {
+				let message = if e.kind() == std::io::ErrorKind::Interrupted {
+					"Operation interrupted by user"
+				} else {
+					"Error selecting options"
+				};
+
+				CliOutput::error(term, message);
+				return;
+			}
+		};
 
 		for url in selected {
-			if let Err(error) = Self::clone_repo(&url) {
-				CliOutput::error(term, &format!("cloning {url}: {error}"));
+			if let Err(e) = Self::clone_repo(&url) {
+				CliOutput::error(term, &format!("cloning {url}: {e}"));
 				println!();
 			} else {
-				CliOutput::success(term, &format!("cloning {url}"));
+				CliOutput::success(term, &format!("cloned {url}"));
 			}
 		}
 	}
@@ -65,7 +77,7 @@ impl Clone {
 	/// Clones a repository into the local organization directory
 	fn clone_repo(url: &str) -> Result<(), String> {
 		let base = Path::new("heroesofcode");
-		fs::create_dir_all(base).map_err(|error| error.to_string())?;
+		fs::create_dir_all(base).map_err(|e| e.to_string())?;
 
 		let name = url.rsplit('/').next().ok_or("invalid url")?;
 		let full_url = format!("{url}.git");
