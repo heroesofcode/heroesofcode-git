@@ -1,4 +1,4 @@
-use heroesofcode_git::cli::Cli;
+use hoc::cli::Cli;
 
 #[tokio::main]
 async fn main() -> Result<(), reqwest::Error> {
