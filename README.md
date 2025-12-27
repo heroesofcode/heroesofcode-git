@@ -11,10 +11,10 @@ cargo install --git https://github.com/heroesofcode/heroesofcode-git
 
 List all repositories
 ```sh
-heroesofcode-git repos
+hoc repos
 ```
 
 Clone repositories
 ```sh
-heroesofcode-git clone
+hoc clone
 ```

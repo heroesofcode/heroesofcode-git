@@ -2,8 +2,8 @@ use httpmock::Method::GET;
 use httpmock::MockServer;
 use serde_json;
 
-use heroesofcode_git::network::Network;
-use heroesofcode_git::repos::RepoResponse;
+use hoc::network::Network;
+use hoc::repos::RepoResponse;
 
 #[tokio::test]
 async fn test_get_json() {
