@@ -15,7 +15,7 @@ use crate::{
 pub struct Clone;
 
 impl Clone {
-	/// Fetches repositories and starts the interactive clone flow
+	/// Fetches repositories and starts either interactive or non-interactive clone flow
 	pub async fn clone_repos(is_clone_all: bool) -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
@@ -24,7 +24,7 @@ impl Clone {
 		match Repos::response().await {
 			Ok(repos) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::success(&term, &"repositories found".to_string());
+				CliOutput::success(&term, &"repositories found");
 
 				if is_clone_all {
 					Self::clone_all_repos(repos, &term);
@@ -70,19 +70,19 @@ impl Clone {
 		};
 
 		for url in selected {
-			Self::validation_clone_state(&url, &term);
+			Self::handle_clone_result(&url, &term);
 		}
 	}
 
-	/// Clone all repositories
+	/// Clones all repositories and outputs results
 	fn clone_all_repos(repos: Vec<RepoResponse>, term: &Term) {
 		for repo in repos {
-			Self::validation_clone_state(&repo.html_url, term);
+			Self::handle_clone_result(&repo.html_url, term);
 		}
 	}
 
-	/// Validate clone repositories state
-	fn validation_clone_state(url: &str, term: &Term) {
+	/// Handles the result of a clone operation, printing success or error messages
+	fn handle_clone_result(url: &str, term: &Term) {
 		if let Err(e) = Self::clone_repo(&url) {
 			CliOutput::error(term, &format!("cloning {url}: {e}"));
 		} else {
