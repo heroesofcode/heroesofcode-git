@@ -16,7 +16,7 @@ pub struct Clone;
 
 impl Clone {
 	/// Fetches repositories and starts the interactive clone flow
-	pub async fn clone_repos() -> Result<(), reqwest::Error> {
+	pub async fn clone_repos(is_clone_all: bool) -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
 		term.write_line("🔥 searching all repositories...").ok();
@@ -24,9 +24,14 @@ impl Clone {
 		match Repos::response().await {
 			Ok(repos) => {
 				term.clear_last_lines(1).ok();
-				CliOutput::success(&term, &format!("repositories found"));
-				Self::multi_select_validation(repos, &term);
-				println!();
+				CliOutput::success(&term, &"repositories found".to_string());
+
+				if is_clone_all {
+					Self::clone_all_repos(repos, &term);
+				} else {
+					Self::multi_select_validation(repos, &term);
+					println!();
+				}
 
 				Ok(())
 			}
@@ -65,12 +70,23 @@ impl Clone {
 		};
 
 		for url in selected {
-			if let Err(e) = Self::clone_repo(&url) {
-				CliOutput::error(term, &format!("cloning {url}: {e}"));
-				println!();
-			} else {
-				CliOutput::success(term, &format!("cloned {url}"));
-			}
+			Self::validation_clone_state(&url, &term);
+		}
+	}
+
+	/// Clone all repositories
+	fn clone_all_repos(repos: Vec<RepoResponse>, term: &Term) {
+		for repo in repos {
+			Self::validation_clone_state(&repo.html_url, term);
+		}
+	}
+
+	/// Validate clone repositories state
+	fn validation_clone_state(url: &str, term: &Term) {
+		if let Err(e) = Self::clone_repo(&url) {
+			CliOutput::error(term, &format!("cloning {url}: {e}"));
+		} else {
+			CliOutput::success(term, &format!("cloned {url}"));
 		}
 	}
 
