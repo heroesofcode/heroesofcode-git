@@ -15,9 +15,9 @@ struct Args {
 enum Command {
 	/// List all repositories
 	Repos,
-	/// Clone some project
+	/// Clone repositories
 	Clone,
-	/// Clone all projects
+	/// Clone all repositories
 	All,
 }
 

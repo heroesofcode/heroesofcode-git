@@ -6,13 +6,19 @@ pub struct Network {
 	client: Client,
 }
 
+impl Default for Network {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl Network {
 	/// Creates a reusable HTTP client with default headers
 	pub fn new() -> Self {
 		let mut headers = header::HeaderMap::new();
 		headers.insert(
 			header::USER_AGENT,
-			header::HeaderValue::from_str("info".into()).expect("invalid user agent"),
+			header::HeaderValue::from_str("info").expect("invalid user agent"),
 		);
 
 		let client = Client::builder()
