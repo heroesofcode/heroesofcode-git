@@ -17,6 +17,8 @@ enum Command {
 	Repos,
 	/// Clone some project
 	Clone,
+	/// Clone all projects
+	All,
 }
 
 pub struct Cli;
@@ -31,7 +33,10 @@ impl Cli {
 				Repos::list_all().await?;
 			}
 			Some(Command::Clone) => {
-				Clone::clone_repos().await?;
+				Clone::clone_repos(false).await?;
+			}
+			Some(Command::All) => {
+				Clone::clone_repos(true).await?;
 			}
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());

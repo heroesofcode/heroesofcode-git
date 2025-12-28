@@ -14,7 +14,12 @@ List all repositories
 hoc repos
 ```
 
-Clone repositories
+Choose the repository to clone
 ```sh
 hoc clone
+```
+
+Clone all repositories
+```sh
+hoc all
 ```
