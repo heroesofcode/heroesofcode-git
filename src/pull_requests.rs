@@ -42,12 +42,12 @@ impl PullRequests {
 				);
 				println!();
 
-				Self::show_table(&result);
+				Self::show_table(&result.items);
 				Ok(())
 			}
 			Err(e) => {
 				let term = Term::stdout();
-				CliOutput::error(&term, &format!("Error by fetch pull requests: {e}"));
+				CliOutput::error(&term, &format!("Error fetching pull requests: {e}"));
 				Err(e)
 			}
 		}
@@ -65,10 +65,10 @@ impl PullRequests {
 	}
 
 	/// Renders pull requests data in a terminal table
-	fn show_table(pull_requests: &PullRequestItems) {
+	fn show_table(pull_requests: &[PullRequestResponse]) {
 		Utils::table(
 			&["User", "Title", "URL"],
-			pull_requests.items.iter(),
+			pull_requests.iter(),
 			|item| {
 				vec![
 					item.user.login.clone(),
