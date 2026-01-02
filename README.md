@@ -8,18 +8,3 @@ heroesofcode-git is a command-line tool designed to manage and clone repositorie
 ```sh
 cargo install --git https://github.com/heroesofcode/heroesofcode-git
 ```
-
-List all repositories
-```sh
-hoc repos
-```
-
-Choose the repository to clone
-```sh
-hoc clone
-```
-
-Clone all repositories
-```sh
-hoc all
-```

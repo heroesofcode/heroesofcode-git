@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use colored::Colorize;
 
 use crate::clone::Clone;
+use crate::pull_requests::PullRequests;
 use crate::repos::Repos;
 
 #[derive(Parser)]
@@ -19,6 +20,8 @@ enum Command {
 	Clone,
 	/// Clone all repositories
 	All,
+	/// Show pull requests open
+	Pr,
 }
 
 pub struct Cli;
@@ -37,6 +40,9 @@ impl Cli {
 			}
 			Some(Command::All) => {
 				Clone::clone_repos(true).await?;
+			}
+			Some(Command::Pr) => {
+				PullRequests::pull_requests_open().await?;
 			}
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());

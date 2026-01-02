@@ -1,0 +1,36 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/search/issues?q=org:heroesofcode+type:pr+state:open"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "total_count": 13,
+      "items": [
+        {
+          "html_url": "https://github.com/heroesofcode/py-tube-transcribe/pull/154",
+          "user": {
+            "login": "renovate[bot]"
+          }
+        },
+        {
+          "html_url": "https://github.com/heroesofcode/swift-explorer/pull/90",
+          "user": {
+            "login": "joaolfp"
+          }
+        },
+        {
+          "html_url": "https://github.com/heroesofcode/xrun/pull/60",
+          "user": {
+            "login": "dependabot"
+          }
+        }
+      ]
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "fixedDelayMilliseconds": 2000
+  }
+}

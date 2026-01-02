@@ -1,7 +1,7 @@
-use comfy_table::Table;
 use console::Term;
 use serde::{Deserialize, Serialize};
 
+use crate::utils::Utils;
 use crate::{cli_output::CliOutput, network::Network};
 
 /// GitHub repository response model
@@ -51,16 +51,8 @@ impl Repos {
 
 	/// Renders repository data in a terminal table
 	fn show_table(repos: &[RepoResponse]) {
-		let mut table = Table::new();
-
-		let titles = vec!["Repositories", "URL"];
-		table.set_header(titles);
-
-		for repo in repos {
-			let rows = vec![repo.name.to_string(), repo.html_url.to_string()];
-			table.add_row(rows);
-		}
-
-		println!("{table}");
+		Utils::table(&["Repositories", "URL"], repos, |item| {
+			vec![item.name.to_string(), item.html_url.to_string()]
+		});
 	}
 }
