@@ -10,18 +10,21 @@
       "items": [
         {
           "html_url": "https://github.com/heroesofcode/py-tube-transcribe/pull/154",
+          "title": "Update dependency pytest to v8",
           "user": {
             "login": "renovate[bot]"
           }
         },
         {
           "html_url": "https://github.com/heroesofcode/swift-explorer/pull/90",
+          "title": "Add new feature",
           "user": {
             "login": "joaolfp"
           }
         },
         {
           "html_url": "https://github.com/heroesofcode/xrun/pull/60",
+          "title": "Bump version",
           "user": {
             "login": "dependabot"
           }

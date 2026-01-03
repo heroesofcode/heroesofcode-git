@@ -20,7 +20,7 @@ impl Utils {
 	/// * `T` - The type of each item in the collection.
 	/// * `I` - An iterable type that yields items of type `T`.
 	/// * `F` - A closure that converts an item of type `T`
-	///         into a `Vec<String>` representing a table row.
+	///   into a `Vec<String>` representing a table row.
 	///
 	/// # Parameters
 	///

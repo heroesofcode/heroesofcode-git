@@ -20,7 +20,7 @@ enum Command {
 	Clone,
 	/// Clone all repositories
 	All,
-	/// Show pull requests open
+	/// Show open pull requests
 	Pr,
 }
 
