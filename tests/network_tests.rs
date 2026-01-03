@@ -33,8 +33,7 @@ async fn test_get_json() {
 async fn test_get_pull_requests() {
 	let server = MockServer::start();
 	server.mock(|when, then| {
-		when.method(GET)
-			.path("/search/issues");
+		when.method(GET).path("/search/issues");
 		then.status(200).json_body_obj(&serde_json::json!({
 			"total_count": 2,
 			"items": [
@@ -62,14 +61,14 @@ async fn test_get_pull_requests() {
 		server.base_url()
 	);
 	let result = network.get_json::<PullRequestItems>(url).await;
-	
+
 	match &result {
 		Ok(prs) => {
 			assert_eq!(prs.total_count, 2);
 			assert_eq!(prs.items.len(), 2);
 			assert_eq!(prs.items[0].title, "Test PR 1");
 			assert_eq!(prs.items[0].user.login, "testuser1");
-		},
+		}
 		Err(e) => {
 			eprintln!("Error: {}", e);
 			panic!("Request failed: {}", e);

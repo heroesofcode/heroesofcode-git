@@ -43,7 +43,7 @@ impl Utils {
 	/// ];
 	/// Utils::table(
 	///     &["Name", "URL"],
-	///     repos.iter().cloned(),
+	///     repos,
 	///     |repo| vec![repo.name, repo.html_url],
 	/// );
 	/// ```

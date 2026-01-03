@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PullRequestItems {
-	/// Array with all pull requests open
+	/// Array of all open pull requests
 	pub items: Vec<PullRequestResponse>,
 	pub total_count: usize,
 }
@@ -43,11 +43,22 @@ impl PullRequests {
 				println!();
 
 				Self::show_table(&result.items);
+
+				let shown = result.items.len();
+				if shown < result.total_count {
+					println!(
+						"{} {} of {} pull requests shown (paginated, truncated by GitHub API)",
+						"⚠️".yellow(),
+						shown,
+						result.total_count
+					);
+				}
+
 				Ok(())
 			}
 			Err(e) => {
 				let term = Term::stdout();
-				CliOutput::error(&term, &format!("Error fetching pull requests: {e}"));
+				CliOutput::error(&term, &format!("fetching pull requests: {e}"));
 				Err(e)
 			}
 		}
@@ -65,17 +76,13 @@ impl PullRequests {
 	}
 
 	/// Renders pull requests data in a terminal table
-	fn show_table(pull_requests: &[PullRequestResponse]) {
-		Utils::table(
-			&["User", "Title", "URL"],
-			pull_requests.iter(),
-			|item| {
-				vec![
-					item.user.login.clone(),
-					item.title.clone(),
-					item.html_url.clone(),
-				]
-			},
-		);
+	fn show_table(prs: &[PullRequestResponse]) {
+		Utils::table(&["User", "Title", "URL"], prs, |item| {
+			vec![
+				item.user.login.clone(),
+				item.title.clone(),
+				item.html_url.clone(),
+			]
+		});
 	}
 }
