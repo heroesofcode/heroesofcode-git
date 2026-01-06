@@ -42,7 +42,7 @@ impl Cli {
 				Clone::clone_repos(true).await?;
 			}
 			Some(Command::Pr) => {
-				PullRequests::pull_requests_open().await?;
+				PullRequests::list_open().await?;
 			}
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());
