@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PullRequestItems {
-	/// Array of all open pull requests
+	/// Pull requests returned in the current page of results
 	pub items: Vec<PullRequestResponse>,
+	/// Total number of matching open pull requests across all pages
 	pub total_count: usize,
 }
 
@@ -18,12 +19,12 @@ pub struct PullRequestResponse {
 	pub html_url: String,
 	/// PR title
 	pub title: String,
-	/// User information who opened the PR
-	pub user: User,
+	/// User information for the user who opened the PR
+	pub user: PullRequestUser,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct User {
+pub struct PullRequestUser {
 	/// Username of the user who opened the PR
 	pub login: String,
 }
@@ -31,7 +32,8 @@ pub struct User {
 pub struct PullRequests;
 
 impl PullRequests {
-	pub async fn pull_requests_open() -> Result<(), reqwest::Error> {
+	/// Fetch open pull requests (first page of paginated results)
+	pub async fn list_open() -> Result<(), reqwest::Error> {
 		match Self::response().await {
 			Ok(result) => {
 				println!();
