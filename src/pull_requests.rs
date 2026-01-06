@@ -32,7 +32,7 @@ pub struct PullRequestUser {
 pub struct PullRequests;
 
 impl PullRequests {
-	/// Fetch all open pull requests
+	/// Fetch open pull requests (first page of paginated results)
 	pub async fn list_open() -> Result<(), reqwest::Error> {
 		match Self::response().await {
 			Ok(result) => {
