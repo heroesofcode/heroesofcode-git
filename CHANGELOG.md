@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.3.0] - 2026-01-06
+
+### Bug Fixes
+
+- Comments #35 (#40)
+
+### Dependency Updates
+
+- Update jdx/mise-action digest to 5ff8b6c (#39)
+- Update Rust crate tokio to v1.49.0 (#38)
+- Update Rust crate clap to v4.5.54 (#37)
+- Update jdx/mise-action digest to e0073e7 (#34)
+- Update Rust crate reqwest to 0.13.0 (#33)
+- Update jdx/mise-action digest to 1567366 (#31)
+- Update Rust crate serde_json to v1.0.148 (#27)
+- Update jdx/mise-action digest to 8ccca8c (#25)
+
+### Features
+
+- List all open pull requests (#35)
+- Add support to clone all repositories (#28)
+
+### Refactor
+
+- Fixing comments #28 (#30)
+- Change the package name (#26)
+
+### Ci
+
+- Configuration update (#32)
+
 ## [0.2.0] - 2025-12-24
 
 ### Bug Fixes
@@ -48,3 +79,5 @@
 ### Chore
 
 - Version v0.1.0 - 2025-12-20 (#14)
+
+
