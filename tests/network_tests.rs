@@ -65,5 +65,4 @@ async fn test_get_pull_requests() {
 	let prs = result.expect("Failed to get pull requests");
 	assert_eq!(prs.total_count, 2);
 	assert_eq!(prs.items.len(), 2);
-	assert_eq!(prs.items.len(), 2);
 }
