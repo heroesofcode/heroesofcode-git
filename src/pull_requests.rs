@@ -19,7 +19,7 @@ pub struct PullRequestResponse {
 	pub html_url: String,
 	/// PR title
 	pub title: String,
-	/// User information who opened the PR
+	/// User information for the user who opened the PR
 	pub user: PullRequestUser,
 }
 
