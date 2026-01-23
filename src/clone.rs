@@ -1,8 +1,8 @@
 use console::Term;
 use demand::{DemandOption, MultiSelect};
+use dirs;
 use std::{
 	fs,
-	path::Path,
 	process::{Command, Stdio},
 };
 
@@ -87,14 +87,19 @@ impl Clone {
 		if let Err(e) = Self::clone_repo(url) {
 			CliOutput::error(term, &format!("cloning {url}: {e}"));
 		} else {
-			CliOutput::success(term, &format!("cloned {url}"));
+			CliOutput::success(
+				term,
+				&format!("cloned {url}. You can find it in the 'heroesofcode' folder on your Desktop."),
+			);
 		}
 	}
 
-	/// Clones a repository into the local organization directory
+	/// Clones a repository into the heroesofcode folder on the user's Desktop
 	fn clone_repo(url: &str) -> Result<(), String> {
-		let base = Path::new("heroesofcode");
-		fs::create_dir_all(base).map_err(|e| e.to_string())?;
+		let base = dirs::desktop_dir()
+			.ok_or("Could not find Desktop!")?
+			.join("heroesofcode");
+		fs::create_dir_all(&base).map_err(|e| e.to_string())?;
 
 		let name = url.rsplit('/').next().ok_or("invalid url")?;
 		let full_url = format!("{url}.git");
@@ -105,7 +110,7 @@ impl Clone {
 
 		Command::new("git")
 			.args(["clone", &full_url])
-			.current_dir(base)
+			.current_dir(&base)
 			.stdout(Stdio::null())
 			.stderr(Stdio::null())
 			.status()
