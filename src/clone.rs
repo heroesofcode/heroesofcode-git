@@ -1,10 +1,9 @@
 use console::Term;
 use demand::{DemandOption, MultiSelect};
 use dirs;
-use std::{
-	fs,
-	process::{Command, Stdio},
-};
+use std::fs;
+
+use xx::git::{self, CloneOptions};
 
 use crate::{
 	cli_output::CliOutput,
@@ -39,7 +38,6 @@ impl Clone {
 			Err(e) => {
 				term.clear_last_lines(1).ok();
 				CliOutput::error(&term, &format!("listing repositories: {e}"));
-
 				Err(e)
 			}
 		}
@@ -102,21 +100,23 @@ impl Clone {
 		fs::create_dir_all(&base).map_err(|e| e.to_string())?;
 
 		let name = url.rsplit('/').next().ok_or("invalid url")?;
-		let full_url = format!("{url}.git");
 
-		if base.join(name).exists() {
+		let dest = base.join(name);
+
+		if dest.exists() {
 			return Err("repository already exists".into());
 		}
 
-		Command::new("git")
-			.args(["clone", &full_url])
-			.current_dir(&base)
-			.stdout(Stdio::null())
-			.stderr(Stdio::null())
-			.status()
-			.map_err(|e| e.to_string())?
-			.success()
-			.then_some(())
-			.ok_or("git clone failed".into())
+		let full_url = if url.ends_with(".git") {
+			url.to_string()
+		} else {
+			format!("{url}.git")
+		};
+
+		let opts = CloneOptions::default();
+
+		git::clone(&full_url, &dest, &opts).map_err(|e| e.to_string())?;
+
+		Ok(())
 	}
 }
