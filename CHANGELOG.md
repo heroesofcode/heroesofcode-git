@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.4.0] - 2026-01-25
+
+### Bug Fixes
+
+- #47 (#57)
+
+### Dependency Updates
+
+- Update jdx/mise-action digest to f03edce (#58)
+- Update jdx/mise-action digest to b128e09 (#56)
+- Update rust to v1.93.0 to v1.93.0 (#55)
+- Update jdx/mise-action digest to 6d1e696 (#54)
+- Update jdx/mise-action digest to c53b923 (#53)
+- Update Rust crate colored to v3.1.1 (#52)
+- Update jdx/mise-action digest to 23096c7 (#51)
+- Update Rust crate comfy-table to v7.2.2 (#50)
+- Update Swatinem/rust-cache digest to 11da852 (#49)
+- Update jdx/mise-action digest to 10c27cd (#48)
+- Update actions/checkout digest to 0c366fd (#46)
+- Update jdx/mise-action digest to e53f0d1 (#45)
+- Update jdx/mise-action digest to 7d22663 (#44)
+- Update actions/checkout digest to 064fe7f (#43)
+- Update actions/github-script digest to 450193c (#42)
+- Update Rust crate serde_json to v1.0.149 (#41)
+
+### Refactor
+
+- Replace clone code to xx (#59)
+
 ## [0.3.0] - 2026-01-06
 
 ### Bug Fixes
