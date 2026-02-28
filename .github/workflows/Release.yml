@@ -1,0 +1,54 @@
+name: Release on version commit
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: |
+      contains(github.event.head_commit.message, 'Prepare version to')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Extract version from commit message
+        id: vars
+        run: |
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create tag only (no release)
+        if: steps.vars.outputs.version != ''
+        run: |
+          VERSION="${{ steps.vars.outputs.version }}"
+          TAG="v${VERSION}"
+
+          echo "Creating tag: $TAG"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping."
+            exit 0
+          fi
+
+          git tag "$TAG"
+          git push origin "$TAG"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
