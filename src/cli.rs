@@ -7,8 +7,7 @@ use crate::repos::Repos;
 
 #[derive(Parser)]
 struct Args {
-	/// Optional subcommand that defines an alternative executions flow
-	#[command[subcommand]]
+	#[command(subcommand)]
 	command: Option<Command>,
 }
 
@@ -27,28 +26,18 @@ enum Command {
 pub struct Cli;
 
 impl Cli {
-	/// Function to initialize the tool
 	pub async fn start() -> Result<(), reqwest::Error> {
 		let args = Args::parse();
 
 		match args.command {
-			Some(Command::Repos) => {
-				Repos::list_all().await?;
-			}
-			Some(Command::Clone) => {
-				Clone::clone_repos(false).await?;
-			}
-			Some(Command::All) => {
-				Clone::clone_repos(true).await?;
-			}
-			Some(Command::Pr) => {
-				PullRequests::list_open().await?;
-			}
+			Some(Command::Repos) => Repos::list_all().await,
+			Some(Command::Clone) => Clone::clone_repos(false).await,
+			Some(Command::All) => Clone::clone_repos(true).await,
+			Some(Command::Pr) => PullRequests::list_open().await,
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());
+				Ok(())
 			}
 		}
-
-		Ok(())
 	}
 }

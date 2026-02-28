@@ -6,20 +6,11 @@ pub struct Network {
 	client: Client,
 }
 
-impl Default for Network {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
 impl Network {
 	/// Creates a reusable HTTP client with default headers
 	pub fn new() -> Self {
 		let mut headers = header::HeaderMap::new();
-		headers.insert(
-			header::USER_AGENT,
-			header::HeaderValue::from_str("info").expect("invalid user agent"),
-		);
+		headers.insert(header::USER_AGENT, header::HeaderValue::from_static("info"));
 
 		let client = Client::builder()
 			.default_headers(headers)
@@ -34,13 +25,17 @@ impl Network {
 	where
 		T: DeserializeOwned,
 	{
-		let response = self.client.get(url).send().await?;
-		let response = response.error_for_status()?;
-		response.json::<T>().await
+		self
+			.client
+			.get(url)
+			.send()
+			.await?
+			.error_for_status()?
+			.json()
+			.await
 	}
 
 	/// Resolves the base API URL based on the build environment
-	/// Uses localhost in debug and GitHub API in release
 	pub fn base_url(&self) -> &'static str {
 		if cfg!(debug_assertions) {
 			"http://localhost:3001"
