@@ -7,9 +7,7 @@ use crate::{cli_output::CliOutput, network::Network};
 /// GitHub repository response model
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RepoResponse {
-	/// Repository name
 	pub name: String,
-	/// Web URL of the repository on GitHub
 	pub html_url: String,
 }
 
@@ -21,21 +19,19 @@ impl Repos {
 	pub async fn list_all() -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
-		term.write_line("🔥 searching all repositories...").ok();
+		CliOutput::loading(&term, "searching all repositories");
 
 		match Self::response().await {
 			Ok(result) => {
-				term.clear_last_lines(1).ok();
+				CliOutput::clear_last(&term);
 				CliOutput::success(&term, "repositories found");
 				println!();
 				Self::show_table(&result);
-
 				Ok(())
 			}
 			Err(e) => {
-				term.clear_last_lines(1).ok();
+				CliOutput::clear_last(&term);
 				CliOutput::error(&term, &format!("listing repositories: {e}"));
-
 				Err(e)
 			}
 		}
@@ -45,8 +41,7 @@ impl Repos {
 	pub async fn response() -> Result<Vec<RepoResponse>, reqwest::Error> {
 		let network = Network::new();
 		let url = format!("{}/orgs/heroesofcode/repos", network.base_url());
-		let result: Vec<RepoResponse> = network.get_json(&url).await?;
-		Ok(result)
+		network.get_json(&url).await
 	}
 
 	/// Renders repository data in a terminal table

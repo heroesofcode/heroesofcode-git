@@ -1,6 +1,5 @@
 use httpmock::Method::GET;
 use httpmock::MockServer;
-use serde_json;
 
 use hoc::network::Network;
 use hoc::pull_requests::PullRequestItems;

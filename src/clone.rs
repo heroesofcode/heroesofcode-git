@@ -1,6 +1,5 @@
 use console::Term;
 use demand::{DemandOption, MultiSelect};
-use dirs;
 use std::fs;
 
 use xx::git::{self, CloneOptions};
@@ -18,25 +17,23 @@ impl Clone {
 	pub async fn clone_repos(is_clone_all: bool) -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
-		term.write_line("🔥 searching all repositories...").ok();
+		CliOutput::loading(&term, "searching all repositories");
 
 		match Repos::response().await {
 			Ok(repos) => {
-				term.clear_last_lines(1).ok();
+				CliOutput::clear_last(&term);
 				CliOutput::success(&term, "repositories found");
 
 				if is_clone_all {
 					Self::clone_all_repos(repos, &term);
-					println!();
 				} else {
 					Self::multi_select_validation(repos, &term);
-					println!();
 				}
-
+				println!();
 				Ok(())
 			}
 			Err(e) => {
-				term.clear_last_lines(1).ok();
+				CliOutput::clear_last(&term);
 				CliOutput::error(&term, &format!("listing repositories: {e}"));
 				Err(e)
 			}
@@ -62,7 +59,6 @@ impl Clone {
 				} else {
 					"Error selecting options"
 				};
-
 				CliOutput::error(term, message);
 				return;
 			}
@@ -82,25 +78,24 @@ impl Clone {
 
 	/// Clones a repository and outputs the result (success or error message)
 	fn handle_clone_result(url: &str, term: &Term) {
-		if let Err(e) = Self::clone_repo(url) {
-			CliOutput::error(term, &format!("cloning {url}: {e}"));
-		} else {
-			CliOutput::success(
+		match Self::clone_repo(url) {
+			Ok(()) => CliOutput::success(
 				term,
 				&format!("cloned {url}. You can find it in the 'heroesofcode' folder on your Desktop."),
-			);
+			),
+			Err(e) => CliOutput::error(term, &format!("cloning {url}: {e}")),
 		}
 	}
 
 	/// Clones a repository into the heroesofcode folder on the user's Desktop
 	fn clone_repo(url: &str) -> Result<(), String> {
 		let base = dirs::desktop_dir()
-			.ok_or("Could not find Desktop!")?
+			.ok_or("Could not find Desktop")?
 			.join("heroesofcode");
+
 		fs::create_dir_all(&base).map_err(|e| e.to_string())?;
 
 		let name = url.rsplit('/').next().ok_or("invalid url")?;
-
 		let dest = base.join(name);
 
 		if dest.exists() {
@@ -113,10 +108,8 @@ impl Clone {
 			format!("{url}.git")
 		};
 
-		let opts = CloneOptions::default();
-
-		git::clone(&full_url, &dest, &opts).map_err(|e| e.to_string())?;
-
-		Ok(())
+		git::clone(&full_url, &dest, &CloneOptions::default())
+			.map(|_| ())
+			.map_err(|e| e.to_string())
 	}
 }

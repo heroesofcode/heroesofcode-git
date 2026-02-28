@@ -7,25 +7,19 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PullRequestItems {
-	/// Pull requests returned in the current page of results
 	pub items: Vec<PullRequestResponse>,
-	/// Total number of matching open pull requests across all pages
 	pub total_count: usize,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PullRequestResponse {
-	/// Web URL of the repository on GitHub
 	pub html_url: String,
-	/// PR title
 	pub title: String,
-	/// User information for the user who opened the PR
 	pub user: PullRequestUser,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PullRequestUser {
-	/// Username of the user who opened the PR
 	pub login: String,
 }
 
@@ -42,6 +36,7 @@ impl PullRequests {
 					"Total Pull Requests:".blue(),
 					result.total_count
 				);
+
 				println!();
 
 				Self::show_table(&result.items);
@@ -55,7 +50,6 @@ impl PullRequests {
 						result.total_count
 					);
 				}
-
 				Ok(())
 			}
 			Err(e) => {
@@ -73,8 +67,7 @@ impl PullRequests {
 			network.base_url()
 		);
 
-		let result: PullRequestItems = network.get_json(&url).await?;
-		Ok(result)
+		network.get_json(&url).await
 	}
 
 	/// Renders pull requests data in a terminal table
