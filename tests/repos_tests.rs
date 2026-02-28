@@ -1,13 +1,7 @@
 use hoc::network::Network;
-use hoc::repos::{RepoResponse, Repos};
+use hoc::repos::RepoResponse;
 use httpmock::Method::GET;
 use httpmock::MockServer;
-
-#[tokio::test]
-async fn test_repos_response_success() {
-	let result = Repos::response().await;
-	assert!(result.is_ok() || result.is_err());
-}
 
 #[test]
 fn test_repo_response_deserialization() {
