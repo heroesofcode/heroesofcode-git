@@ -19,7 +19,7 @@ fn test_pull_request_response_deserialization() {
 #[test]
 fn test_pull_request_items_deserialization() {
 	let json = r#"{
-		"total_count": 3,
+		"total_count": 2,
 		"items": [
 			{
 				"html_url": "https://github.com/heroesofcode/test/pull/1",
@@ -35,7 +35,7 @@ fn test_pull_request_items_deserialization() {
 	}"#;
 
 	let items: PullRequestItems = serde_json::from_str(json).unwrap();
-	assert_eq!(items.total_count, 3);
+	assert_eq!(items.total_count, 2);
 	assert_eq!(items.items.len(), 2);
 	assert_eq!(items.items[0].title, "PR 1");
 	assert_eq!(items.items[1].user.login, "user2");
