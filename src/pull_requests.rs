@@ -36,7 +36,7 @@ impl PullRequests {
 					"Total Pull Requests:".blue(),
 					result.total_count
 				);
-				
+
 				println!();
 
 				Self::show_table(&result.items);
