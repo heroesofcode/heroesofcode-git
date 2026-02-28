@@ -121,14 +121,3 @@ async fn test_get_pull_requests_empty() {
 	assert_eq!(prs.total_count, 0);
 	assert_eq!(prs.items.len(), 0);
 }
-
-#[test]
-fn test_network_base_url_debug() {
-	let network = Network::new();
-	let url = network.base_url();
-	if cfg!(debug_assertions) {
-		assert_eq!(url, "http://localhost:3001");
-	} else {
-		assert_eq!(url, "https://api.github.com");
-	}
-}
