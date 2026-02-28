@@ -1,6 +1,42 @@
 # Changelog
 
-## [0.4.0] - 2026-01-25
+## [0.5.0] - 2026-02-28
+
+### Dependency Updates
+
+- Update jdx/mise-action digest to 9b0f77b (#82)
+- Update jdx/mise-action digest to 3030cd8 (#81)
+- Update jdx/mise-action digest to 60119f9 (#80)
+- Update jdx/mise-action digest to e371f56 (#79)
+- Update Rust crate clap to v4.5.60 (#78)
+- Update jdx/mise-action digest to 7cba2b1 (#77)
+- Update Rust crate xx to v2.5.2 (#76)
+- Update Rust crate clap to v4.5.59 (#75)
+- Update jdx/mise-action digest to 5b0e1f5 (#74)
+- Update rust to v1.93.1
+- Update Rust crate clap to v4.5.58 (#72)
+- Update jdx/mise-action digest to 22f3a82 (#71)
+- Update Rust crate reqwest to v0.13.2 (#70)
+- Update jdx/mise-action digest to c1a019b (#69)
+- Update Rust crate httpmock to v0.8.3 (#68)
+- Update Rust crate clap to v4.5.57 (#67)
+- Update jdx/mise-action digest to 10eed64 (#66)
+- Update Rust crate xx to v2.5.1 (#65)
+- Update Rust crate demand to v1.8.2 (#63)
+- Update Rust crate xx to v2.4.0 (#64)
+- Update jdx/mise-action digest to 850a9f1 (#62)
+- Update Rust crate clap to v4.5.56 (#61)
+- Update Rust crate clap to v4.5.55 (#60)
+
+### Refactor
+
+- Organize code (#83)
+
+### Structure
+
+- Add more tests (#84)
+
+## [0.4.0] - 2026-01-27
 
 ### Bug Fixes
 
