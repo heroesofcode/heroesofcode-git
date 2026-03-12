@@ -19,7 +19,7 @@ jobs:
           experimental: true
 
       - name: Restore Rust cache
-        uses: Swatinem/rust-cache@8a02ed5e290d8afc7e587930243f3016b3223f50
+        uses: Swatinem/rust-cache@d7ac6f694df60fb8ce48bab7b59ad5da1ac8d46e
 
       - name: Run build
         id: build
