@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0] - 2026-03-19
+
+### Dependency Updates
+
+- Update actions/cache digest to 6682284 (#100)
+
+### Features
+
+- Exclude archived repositories from list (#101)
+
 ## [0.5.0] - 2026-02-28
 
 ### Dependency Updates
