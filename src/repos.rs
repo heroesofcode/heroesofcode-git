@@ -9,6 +9,7 @@ use crate::{cli_output::CliOutput, network::Network};
 pub struct RepoResponse {
 	pub name: String,
 	pub html_url: String,
+	pub archived: bool,
 }
 
 /// Repository operations handler
@@ -37,11 +38,12 @@ impl Repos {
 		}
 	}
 
-	/// Requests the repository list from the API
+	/// Requests the repository list from the API, excluding archived repositories
 	pub async fn response() -> Result<Vec<RepoResponse>, reqwest::Error> {
 		let network = Network::new();
 		let url = format!("{}/orgs/heroesofcode/repos", network.base_url());
-		network.get_json(&url).await
+		let repos: Vec<RepoResponse> = network.get_json(&url).await?;
+		Ok(repos.into_iter().filter(|r| !r.archived).collect())
 	}
 
 	/// Renders repository data in a terminal table

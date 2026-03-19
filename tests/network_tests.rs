@@ -13,11 +13,13 @@ async fn test_get_json_success() {
 		then.status(200).json_body_obj(&vec![
 			serde_json::json!({
 					"name": "ViewState",
-					"html_url": "https://github.com/heroesofcode/ViewState"
+					"html_url": "https://github.com/heroesofcode/ViewState",
+					"archived": false
 			}),
 			serde_json::json!({
 					"name": "DataLife",
-					"html_url": "https://github.com/heroesofcode/DataLife"
+					"html_url": "https://github.com/heroesofcode/DataLife",
+					"archived": false
 			}),
 		]);
 	});
