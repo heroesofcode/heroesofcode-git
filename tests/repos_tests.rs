@@ -7,7 +7,8 @@ use httpmock::MockServer;
 fn test_repo_response_deserialization() {
 	let json = r#"{
 		"name": "test-repo",
-		"html_url": "https://github.com/heroesofcode/test-repo"
+		"html_url": "https://github.com/heroesofcode/test-repo",
+		"archived": false
 	}"#;
 
 	let repo: RepoResponse = serde_json::from_str(json).unwrap();
@@ -38,9 +39,9 @@ async fn test_repos_multiple_items() {
 	server.mock(|when, then| {
 		when.method(GET).path("/orgs/heroesofcode/repos");
 		then.status(200).json_body_obj(&vec![
-			serde_json::json!({"name": "repo1", "html_url": "https://github.com/heroesofcode/repo1"}),
-			serde_json::json!({"name": "repo2", "html_url": "https://github.com/heroesofcode/repo2"}),
-			serde_json::json!({"name": "repo3", "html_url": "https://github.com/heroesofcode/repo3"}),
+			serde_json::json!({"name": "repo1", "html_url": "https://github.com/heroesofcode/repo1", "archived": false}),
+			serde_json::json!({"name": "repo2", "html_url": "https://github.com/heroesofcode/repo2", "archived": false}),
+			serde_json::json!({"name": "repo3", "html_url": "https://github.com/heroesofcode/repo3", "archived": false}),
 		]);
 	});
 
