@@ -42,13 +42,17 @@ impl Clone {
 
 	/// Displays a multi-select prompt for repository selection
 	fn multi_select_validation(repos: Vec<RepoResponse>, term: &Term) {
+		const CLONE_ALL_VALUE: &str = "__clone_all__";
+
 		let mut multi_select = MultiSelect::new("Repositories")
 			.description("Select the repositories you want to clone")
 			.min(1)
-			.filterable(true);
+			.filterable(true)
+			.option(DemandOption::new(CLONE_ALL_VALUE).label("Clone All"));
 
-		for repo in repos {
-			multi_select = multi_select.option(DemandOption::new(repo.html_url).label(&repo.name));
+		for repo in &repos {
+			multi_select =
+				multi_select.option(DemandOption::new(repo.html_url.as_str()).label(&repo.name));
 		}
 
 		let selected = match multi_select.run() {
@@ -64,8 +68,12 @@ impl Clone {
 			}
 		};
 
-		for url in selected {
-			Self::handle_clone_result(&url, term);
+		if selected.iter().any(|s| *s == CLONE_ALL_VALUE) {
+			Self::clone_all_repos(repos, term);
+		} else {
+			for url in selected {
+				Self::handle_clone_result(&url, term);
+			}
 		}
 	}
 
