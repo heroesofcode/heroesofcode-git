@@ -68,11 +68,11 @@ impl Clone {
 			}
 		};
 
-		if selected.iter().any(|s| *s == CLONE_ALL_VALUE) {
+		if selected.contains(&CLONE_ALL_VALUE) {
 			Self::clone_all_repos(repos, term);
 		} else {
 			for url in selected {
-				Self::handle_clone_result(&url, term);
+				Self::handle_clone_result(url, term);
 			}
 		}
 	}
