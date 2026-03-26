@@ -10,6 +10,7 @@ pub struct RepoResponse {
 	pub name: String,
 	pub html_url: String,
 	pub archived: bool,
+	pub language: Option<String>,
 }
 
 /// Repository operations handler

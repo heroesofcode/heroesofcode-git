@@ -72,7 +72,12 @@ impl Clone {
 			Self::clone_all_repos(repos, term);
 		} else {
 			for url in selected {
-				Self::handle_clone_result(url, term);
+				let language = repos
+					.iter()
+					.find(|r| r.html_url == url)
+					.and_then(|r| r.language.as_deref());
+
+				Self::handle_clone_result(url, language, term);
 			}
 		}
 	}
@@ -80,26 +85,28 @@ impl Clone {
 	/// Clones all repositories without user interaction and outputs results
 	fn clone_all_repos(repos: Vec<RepoResponse>, term: &Term) {
 		for repo in repos {
-			Self::handle_clone_result(&repo.html_url, term);
+			Self::handle_clone_result(&repo.html_url, repo.language.as_deref(), term);
 		}
 	}
 
 	/// Clones a repository and outputs the result (success or error message)
-	fn handle_clone_result(url: &str, term: &Term) {
-		match Self::clone_repo(url) {
-			Ok(()) => CliOutput::success(
-				term,
-				&format!("cloned {url}. You can find it in the 'heroesofcode' folder on your Desktop."),
-			),
+	fn handle_clone_result(url: &str, language: Option<&str>, term: &Term) {
+		match Self::clone_repo(url, language) {
+			Ok(path) => CliOutput::success(term, &format!("cloned {url} → {}", path.display())),
 			Err(e) => CliOutput::error(term, &format!("cloning {url}: {e}")),
 		}
 	}
 
-	/// Clones a repository into the heroesofcode folder on the user's Desktop
-	fn clone_repo(url: &str) -> Result<(), String> {
-		let base = dirs::desktop_dir()
+	/// Clones a repository into the heroesofcode/<language> folder on the user's Desktop
+	fn clone_repo(url: &str, language: Option<&str>) -> Result<std::path::PathBuf, String> {
+		let heroesofcode_dir = dirs::desktop_dir()
 			.ok_or("Could not find Desktop")?
 			.join("heroesofcode");
+
+		let base = match language {
+			Some(lang) => heroesofcode_dir.join(lang.to_lowercase()),
+			None => heroesofcode_dir,
+		};
 
 		fs::create_dir_all(&base).map_err(|e| e.to_string())?;
 
@@ -117,7 +124,7 @@ impl Clone {
 		};
 
 		git::clone(&full_url, &dest, &CloneOptions::default())
-			.map(|_| ())
+			.map(|_| dest)
 			.map_err(|e| e.to_string())
 	}
 }
