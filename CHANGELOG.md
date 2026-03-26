@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.0] - 2026-03-26
+
+### Dependency Updates
+
+- Update rust to v1.94.1 to v1.94.1 (#111)
+
+### Feature
+
+- clone repositories by language (#110)
+
 ## [0.6.0] - 2026-03-19
 
 ### Dependency Updates
