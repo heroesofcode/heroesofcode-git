@@ -96,7 +96,7 @@ impl Clone {
 			} else {
 				"no repositories found matching the filter"
 			};
-			
+
 			CliOutput::error(term, message);
 			return;
 		}
