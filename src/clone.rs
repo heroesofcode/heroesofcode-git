@@ -25,10 +25,11 @@ impl Clone {
 				CliOutput::success(&term, "repositories found");
 
 				if is_clone_all {
-					Self::clone_all_repos(repos, &term);
+					Self::clone_all_repos(repos.iter(), &term);
 				} else {
 					Self::multi_select_validation(repos, &term);
 				}
+
 				println!();
 				Ok(())
 			}
@@ -42,47 +43,49 @@ impl Clone {
 
 	/// Displays a multi-select prompt for repository selection
 	fn multi_select_validation(repos: Vec<RepoResponse>, term: &Term) {
-		let mut languages: Vec<String> = repos
+		let mut languages: Vec<&str> = repos
 			.iter()
-			.filter_map(|r| r.language.clone())
+			.filter_map(|r| r.language.as_deref())
 			.collect::<std::collections::HashSet<_>>()
 			.into_iter()
 			.collect();
 
 		languages.sort();
 
-		let mut lang_select = MultiSelect::new("Languages")
-			.description("Select languages to filter repositories (none = show all)");
+		let selected_langs: Vec<&str> = if languages.is_empty() {
+			Vec::new()
+		} else {
+			let mut lang_select = MultiSelect::new("Languages")
+				.description("Select languages to filter repositories (none = show all)");
 
-		for lang in &languages {
-			lang_select = lang_select.option(DemandOption::new(lang.as_str()).label(lang.as_str()));
-		}
+			for lang in &languages {
+				lang_select = lang_select.option(DemandOption::new(*lang).label(lang));
+			}
 
-		let selected_langs = match lang_select.run() {
-			Ok(s) => s,
-			Err(e) => {
-				let message = if e.kind() == std::io::ErrorKind::Interrupted {
-					"Operation interrupted by user"
-				} else {
-					"Error selecting languages"
-				};
-				CliOutput::error(term, message);
-				return;
+			match lang_select.run() {
+				Ok(s) => s,
+				Err(e) => {
+					let message = if e.kind() == std::io::ErrorKind::Interrupted {
+						"Operation interrupted by user"
+					} else {
+						"Error selecting languages"
+					};
+
+					CliOutput::error(term, message);
+					return;
+				}
 			}
 		};
 
-		let filtered_repos: Vec<&RepoResponse> = if selected_langs.is_empty() {
-			repos.iter().collect()
-		} else {
-			repos
-				.iter()
-				.filter(|r| {
-					r.language
+		let filtered_repos: Vec<&RepoResponse> = repos
+			.iter()
+			.filter(|r| {
+				selected_langs.is_empty()
+					|| r.language
 						.as_deref()
 						.is_some_and(|lang| selected_langs.contains(&lang))
-				})
-				.collect()
-		};
+			})
+			.collect();
 
 		const CLONE_ALL_VALUE: &str = "__clone_all__";
 
@@ -111,9 +114,7 @@ impl Clone {
 		};
 
 		if selected.contains(&CLONE_ALL_VALUE) {
-			for repo in filtered_repos {
-				Self::handle_clone_result(&repo.html_url, repo.language.as_deref(), term);
-			}
+			Self::clone_all_repos(filtered_repos.iter().copied(), term);
 		} else {
 			for url in selected {
 				let language = filtered_repos
@@ -126,8 +127,11 @@ impl Clone {
 		}
 	}
 
-	/// Clones all repositories without user interaction and outputs results
-	fn clone_all_repos(repos: Vec<RepoResponse>, term: &Term) {
+	/// Clones each repository in order (clone-all mode or interactive "Clone All" after filtering).
+	fn clone_all_repos<'a>(
+		repos: impl IntoIterator<Item = &'a RepoResponse>,
+		term: &Term,
+	) {
 		for repo in repos {
 			Self::handle_clone_result(&repo.html_url, repo.language.as_deref(), term);
 		}
