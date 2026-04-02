@@ -90,6 +90,17 @@ impl Clone {
 
 		const CLONE_ALL_VALUE: &str = "__clone_all__";
 
+		if filtered_repos.is_empty() {
+			let message = if repos.is_empty() {
+				"no repositories available to clone"
+			} else {
+				"no repositories found matching the filter"
+			};
+			
+			CliOutput::error(term, message);
+			return;
+		}
+
 		let mut multi_select = MultiSelect::new("Repositories")
 			.description("Select the repositories you want to clone")
 			.min(1)
