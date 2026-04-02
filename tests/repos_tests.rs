@@ -14,6 +14,20 @@ fn test_repo_response_deserialization() {
 	let repo: RepoResponse = serde_json::from_str(json).unwrap();
 	assert_eq!(repo.name, "test-repo");
 	assert_eq!(repo.html_url, "https://github.com/heroesofcode/test-repo");
+	assert_eq!(repo.language, None);
+}
+
+#[test]
+fn test_repo_response_deserialization_with_language() {
+	let json = r#"{
+		"name": "test-repo",
+		"html_url": "https://github.com/heroesofcode/test-repo",
+		"archived": false,
+		"language": "Rust"
+	}"#;
+
+	let repo: RepoResponse = serde_json::from_str(json).unwrap();
+	assert_eq!(repo.language, Some("Rust".to_string()));
 }
 
 #[tokio::test]
