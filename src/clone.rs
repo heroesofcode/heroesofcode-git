@@ -81,7 +81,8 @@ impl Clone {
 			.iter()
 			.filter(|r| {
 				selected_langs.is_empty()
-					|| r.language
+					|| r
+						.language
 						.as_deref()
 						.is_some_and(|lang| selected_langs.contains(&lang))
 			})
@@ -128,10 +129,7 @@ impl Clone {
 	}
 
 	/// Clones each repository in order (clone-all mode or interactive "Clone All" after filtering).
-	fn clone_all_repos<'a>(
-		repos: impl IntoIterator<Item = &'a RepoResponse>,
-		term: &Term,
-	) {
+	fn clone_all_repos<'a>(repos: impl IntoIterator<Item = &'a RepoResponse>, term: &Term) {
 		for repo in repos {
 			Self::handle_clone_result(&repo.html_url, repo.language.as_deref(), term);
 		}
