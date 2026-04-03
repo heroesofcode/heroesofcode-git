@@ -62,7 +62,7 @@ Integration tests live in `tests/` and use `httpmock` to mock HTTP servers. Unit
 - Async-first: tokio runtime, `.await` throughout
 - Error handling: `Result<(), reqwest::Error>` for fallible ops
 - Formatting: enforced by `.rustfmt.toml` (hard tabs, `group_imports = "StdExternalCrate"`)
-- Conventional commits required (parsed by git-cliff for CHANGELOG)
+- Conventional commits required
 
 ## CI/CD
 
