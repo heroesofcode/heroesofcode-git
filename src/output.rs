@@ -1,10 +1,9 @@
 use colored::Colorize;
 use console::Term;
 
-/// Centralizes all CLI terminal output helpers
-pub struct CliOutput;
+pub struct Output;
 
-impl CliOutput {
+impl Output {
 	pub fn success(term: &Term, message: &str) {
 		term
 			.write_line(&format!("{} {}", "✓".green(), message))

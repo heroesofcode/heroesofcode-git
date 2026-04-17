@@ -1,5 +1,6 @@
-use hoc::network::Network;
-use hoc::repos::RepoResponse;
+use hoc::github::GitHubClient;
+use hoc::github::client::Network;
+use hoc::repositories::repos::RepoResponse;
 use httpmock::Method::GET;
 use httpmock::MockServer;
 

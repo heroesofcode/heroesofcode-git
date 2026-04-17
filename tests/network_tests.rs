@@ -1,9 +1,10 @@
 use httpmock::Method::GET;
 use httpmock::MockServer;
 
-use hoc::network::Network;
-use hoc::pull_requests::PullRequestItems;
-use hoc::repos::RepoResponse;
+use hoc::github::GitHubClient;
+use hoc::github::client::Network;
+use hoc::repositories::pull_requests::PullRequestItems;
+use hoc::repositories::repos::RepoResponse;
 
 #[tokio::test]
 async fn test_get_json_success() {
@@ -28,6 +29,7 @@ async fn test_get_json_success() {
 	let url = &format!("{}/orgs/heroesofcode/repos", server.base_url());
 	let result = network.get_json::<Vec<RepoResponse>>(url).await;
 	assert!(result.is_ok());
+
 	let repos = result.unwrap();
 	assert_eq!(repos.len(), 2);
 	assert_eq!(repos[0].name, "ViewState");
@@ -93,6 +95,7 @@ async fn test_get_pull_requests_success() {
 		"{}/search/issues?q=org:heroesofcode+type:pr+state:open",
 		server.base_url()
 	);
+
 	let result = network.get_json::<PullRequestItems>(url).await;
 
 	let prs = result.expect("Failed to get pull requests");

@@ -1,9 +1,9 @@
 use clap::{Parser, Subcommand};
 use colored::Colorize;
 
-use crate::clone::Clone;
-use crate::pull_requests::PullRequests;
-use crate::repos::Repos;
+use crate::commands::{
+	clone::CloneCommand, list_prs::ListPrsCommand, list_repos::ListReposCommand,
+};
 
 #[derive(Parser)]
 struct Args {
@@ -30,10 +30,10 @@ impl Cli {
 		let args = Args::parse();
 
 		match args.command {
-			Some(Command::Repos) => Repos::list_all().await,
-			Some(Command::Clone) => Clone::clone_repos(false).await,
-			Some(Command::All) => Clone::clone_repos(true).await,
-			Some(Command::Pr) => PullRequests::list_open().await,
+			Some(Command::Repos) => ListReposCommand::execute().await,
+			Some(Command::Clone) => CloneCommand::execute(false).await,
+			Some(Command::All) => CloneCommand::execute(true).await,
+			Some(Command::Pr) => ListPrsCommand::execute().await,
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());
 				Ok(())
