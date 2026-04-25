@@ -29,12 +29,13 @@ pub struct Cli;
 impl Cli {
 	pub async fn start() -> Result<(), reqwest::Error> {
 		let args = Args::parse();
+		let client = Network::new();
 
 		match args.command {
-			Some(Command::Repos) => ListReposCommand::execute(Network::new()).await,
-			Some(Command::Clone) => CloneCommand::execute(Network::new(), false).await,
-			Some(Command::All) => CloneCommand::execute(Network::new(), true).await,
-			Some(Command::Pr) => ListPrsCommand::execute(Network::new()).await,
+			Some(Command::Repos) => ListReposCommand::execute(client).await,
+			Some(Command::Clone) => CloneCommand::execute(client, false).await,
+			Some(Command::All) => CloneCommand::execute(client, true).await,
+			Some(Command::Pr) => ListPrsCommand::execute(client).await,
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());
 				Ok(())
