@@ -5,7 +5,7 @@ use demand::{DemandOption, MultiSelect};
 use xx::git::{self, CloneOptions};
 
 use crate::{
-	github::client::Network,
+	github::GitHubClient,
 	output::Output,
 	repositories::repos::{RepoRepository, RepoResponse},
 };
@@ -13,10 +13,13 @@ use crate::{
 pub struct CloneCommand;
 
 impl CloneCommand {
-	pub async fn execute(is_clone_all: bool) -> Result<(), reqwest::Error> {
+	pub async fn execute<C: GitHubClient>(
+		client: C,
+		is_clone_all: bool,
+	) -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
-		let repo = RepoRepository::new(Network::new());
+		let repo = RepoRepository::new(client);
 
 		Output::loading(&term, "searching all repositories");
 		let result = repo.fetch().await;

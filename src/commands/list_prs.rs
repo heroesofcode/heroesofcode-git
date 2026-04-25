@@ -2,7 +2,7 @@ use colored::Colorize;
 use console::Term;
 
 use crate::{
-	github::client::Network,
+	github::GitHubClient,
 	output::Output,
 	repositories::pull_requests::{PrRepository, PullRequestResponse},
 	utils::Utils,
@@ -11,9 +11,9 @@ use crate::{
 pub struct ListPrsCommand;
 
 impl ListPrsCommand {
-	pub async fn execute() -> Result<(), reqwest::Error> {
+	pub async fn execute<C: GitHubClient>(client: C) -> Result<(), reqwest::Error> {
 		let term = Term::stdout();
-		let repo = PrRepository::new(Network::new());
+		let repo = PrRepository::new(client);
 
 		match repo.fetch().await {
 			Ok(result) => {
