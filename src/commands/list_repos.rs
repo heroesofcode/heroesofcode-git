@@ -1,7 +1,7 @@
 use console::Term;
 
 use crate::{
-	github::client::Network,
+	github::GitHubClient,
 	output::Output,
 	repositories::repos::{RepoRepository, RepoResponse},
 	utils::Utils,
@@ -10,10 +10,10 @@ use crate::{
 pub struct ListReposCommand;
 
 impl ListReposCommand {
-	pub async fn execute() -> Result<(), reqwest::Error> {
+	pub async fn execute<C: GitHubClient>(client: C) -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
-		let repo = RepoRepository::new(Network::new());
+		let repo = RepoRepository::new(client);
 
 		Output::loading(&term, "searching all repositories");
 
