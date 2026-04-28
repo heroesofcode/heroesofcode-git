@@ -137,12 +137,11 @@ fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
 		clone_all(filtered_repos.iter().copied(), term);
 	} else {
 		for url in selected {
-			let language = filtered_repos
-				.iter()
-				.find(|r| r.html_url == url)
-				.and_then(|r| r.language.as_deref());
+			let repo = filtered_repos.iter().find(|r| r.html_url == url);
 
-			handle_clone_result(url, language, term);
+			if let Some(repo) = repo {
+				handle_clone_result(url, &repo.name, repo.language.as_deref(), term);
+			}
 		}
 	}
 }
@@ -150,15 +149,15 @@ fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
 /// Clones each repository in order
 fn clone_all<'a>(repos: impl IntoIterator<Item = &'a RepoResponse>, term: &Term) {
 	for repo in repos {
-		handle_clone_result(&repo.html_url, repo.language.as_deref(), term);
+		handle_clone_result(&repo.html_url, &repo.name, repo.language.as_deref(), term);
 	}
 }
 
 /// Clones a repository and outputs the result
-fn handle_clone_result(url: &str, language: Option<&str>, term: &Term) {
+fn handle_clone_result(url: &str, name: &str, language: Option<&str>, term: &Term) {
 	match clone_repo(url, language) {
-		Ok(path) => Output::success(term, &format!("cloned {url} → {}", path.display())),
-		Err(e) => Output::error(term, &format!("cloning {url}: {e}")),
+		Ok(_) => Output::success(term, &format!("{name} cloned")),
+		Err(e) => Output::error(term, &format!("{name} {e}")),
 	}
 }
 
