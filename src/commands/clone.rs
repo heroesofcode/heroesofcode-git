@@ -156,9 +156,10 @@ fn clone_all<'a>(repos: impl IntoIterator<Item = &'a RepoResponse>, term: &Term)
 
 /// Clones a repository and outputs the result
 fn handle_clone_result(url: &str, language: Option<&str>, term: &Term) {
+	let name = url.rsplit('/').next().unwrap_or(url);
 	match clone_repo(url, language) {
-		Ok(path) => Output::success(term, &format!("cloned {url} → {}", path.display())),
-		Err(e) => Output::error(term, &format!("cloning {url}: {e}")),
+		Ok(_) => Output::success(term, &format!("{name} cloned")),
+		Err(e) => Output::error(term, &format!("{name} {e}")),
 	}
 }
 
