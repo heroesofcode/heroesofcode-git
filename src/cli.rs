@@ -15,12 +15,16 @@ struct Args {
 #[derive(Subcommand)]
 enum Command {
 	/// List all repositories
+	#[clap(visible_alias = "r")]
 	Repos,
 	/// Clone repositories
+	#[clap(visible_alias = "c")]
 	Clone,
 	/// Clone all repositories
+	#[clap(visible_alias = "a")]
 	All,
 	/// Show open pull requests
+	#[clap(visible_alias = "p")]
 	Pr,
 }
 
