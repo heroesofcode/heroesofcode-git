@@ -15,22 +15,22 @@ cargo install --git https://github.com/heroesofcode/heroesofcode-git
 
 ### List all repositories
 ```sh
-hoc repos
+hoc repos  # or hoc r
 ```
 
 ### Clone repositories interactively
 ```sh
-hoc clone
+hoc clone  # or hoc c
 ```
 
 ### Clone all repositories
 ```sh
-hoc all
+hoc all  # or hoc a
 ```
 
 ### Show open pull requests
 ```sh
-hoc pr
+hoc pr  # or hoc p
 ```
 
 ### Help
