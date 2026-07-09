@@ -32,7 +32,7 @@ impl CloneCommand {
 				if is_clone_all {
 					clone_all(repos.iter(), &term);
 				} else {
-					interactive_select(repos, &term);
+					while interactive_select(&repos, &term) {}
 				}
 
 				println!();
@@ -46,8 +46,9 @@ impl CloneCommand {
 	}
 }
 
-/// Displays a multi-select prompt for repository selection
-fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
+/// Displays a multi-select prompt for repository selection.
+/// Returns `true` to loop back to the start, `false` when the user cancelled.
+fn interactive_select(repos: &[RepoResponse], term: &Term) -> bool {
 	let mut languages: Vec<&str> = repos
 		.iter()
 		.filter_map(|r| r.language.as_deref())
@@ -77,7 +78,7 @@ fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
 				};
 
 				Output::error(term, message);
-				return;
+				return false;
 			}
 		}
 	};
@@ -103,7 +104,7 @@ fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
 		};
 
 		Output::error(term, message);
-		return;
+		return false;
 	}
 
 	let mut multi_select = MultiSelect::new("Repositories")
@@ -129,7 +130,7 @@ fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
 			};
 
 			Output::error(term, message);
-			return;
+			return false;
 		}
 	};
 
@@ -144,6 +145,8 @@ fn interactive_select(repos: Vec<RepoResponse>, term: &Term) {
 			}
 		}
 	}
+
+	true
 }
 
 /// Clones each repository in order
