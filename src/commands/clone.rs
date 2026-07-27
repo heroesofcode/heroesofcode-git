@@ -1,7 +1,7 @@
-use std::fs;
+use std::{fs, sync::LazyLock};
 
 use console::Term;
-use demand::{DemandOption, MultiSelect};
+use demand::{DemandOption, MultiSelect, Theme};
 use xx::git::{self, CloneOptions};
 
 use crate::{
@@ -9,6 +9,8 @@ use crate::{
 	output::Output,
 	repositories::repos::{RepoRepository, RepoResponse},
 };
+
+static DRACULA_THEME: LazyLock<Theme> = LazyLock::new(Theme::dracula);
 
 pub struct CloneCommand;
 
@@ -62,7 +64,8 @@ fn interactive_select(repos: &[RepoResponse], term: &Term) -> bool {
 		Vec::new()
 	} else {
 		let mut lang_select = MultiSelect::new("Languages")
-			.description("Select languages to filter repositories (none = show all)");
+			.description("Select languages to filter repositories (none = show all)")
+			.theme(&DRACULA_THEME);
 
 		for lang in &languages {
 			lang_select = lang_select.option(DemandOption::new(*lang).label(lang));
@@ -110,7 +113,8 @@ fn interactive_select(repos: &[RepoResponse], term: &Term) -> bool {
 	let mut multi_select = MultiSelect::new("Repositories")
 		.description("Select the repositories you want to clone")
 		.min(1)
-		.filterable(true);
+		.filterable(true)
+		.theme(&DRACULA_THEME);
 
 	if filtered_repos.len() > 1 {
 		multi_select = multi_select.option(DemandOption::new(CLONE_ALL_VALUE).label("Clone All"));
