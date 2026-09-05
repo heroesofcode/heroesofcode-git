@@ -17,7 +17,7 @@ comfy-table = "8.0.0"
 demand = "2.0.1"
 console = "0.16.2"
 colored = "3.0.0"
-dirs = "6.0.0"
+dirs = "7.0.0"
 xx = "2.3.1"
 
 [dev-dependencies]
