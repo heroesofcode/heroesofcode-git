@@ -65,6 +65,40 @@ async fn test_get_json_invalid_json() {
 }
 
 #[tokio::test]
+async fn test_get_user_repos_success() {
+	let server = MockServer::start();
+	server.mock(|when, then| {
+		when.method(GET).path("/users/joaolfp/repos");
+		then.status(200).json_body_obj(&vec![
+			serde_json::json!({
+					"name": "public-repo",
+					"html_url": "https://github.com/joaolfp/public-repo",
+					"archived": false,
+					"private": false
+			}),
+			serde_json::json!({
+					"name": "private-repo",
+					"html_url": "https://github.com/joaolfp/private-repo",
+					"archived": false,
+					"private": true
+			}),
+		]);
+	});
+
+	let network = Network::new();
+	let url = &format!("{}/users/joaolfp/repos", server.base_url());
+	let result = network.get_json::<Vec<RepoResponse>>(url).await;
+	assert!(result.is_ok());
+
+	let repos = result.unwrap();
+	assert_eq!(repos.len(), 2);
+	assert_eq!(repos[0].name, "public-repo");
+	assert!(!repos[0].private);
+	assert_eq!(repos[1].name, "private-repo");
+	assert!(repos[1].private);
+}
+
+#[tokio::test]
 async fn test_get_pull_requests_success() {
 	let server = MockServer::start();
 	server.mock(|when, then| {

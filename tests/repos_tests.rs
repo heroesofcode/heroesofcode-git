@@ -31,6 +31,31 @@ fn test_repo_response_deserialization_with_language() {
 	assert_eq!(repo.language, Some("Rust".to_string()));
 }
 
+#[test]
+fn test_repo_response_deserialization_defaults_private_to_false() {
+	let json = r#"{
+		"name": "test-repo",
+		"html_url": "https://github.com/joaolfp/test-repo",
+		"archived": false
+	}"#;
+
+	let repo: RepoResponse = serde_json::from_str(json).unwrap();
+	assert!(!repo.private);
+}
+
+#[test]
+fn test_repo_response_deserialization_with_private() {
+	let json = r#"{
+		"name": "test-repo",
+		"html_url": "https://github.com/joaolfp/test-repo",
+		"archived": false,
+		"private": true
+	}"#;
+
+	let repo: RepoResponse = serde_json::from_str(json).unwrap();
+	assert!(repo.private);
+}
+
 #[tokio::test]
 async fn test_repos_empty_list() {
 	let server = MockServer::start();

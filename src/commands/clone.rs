@@ -18,13 +18,25 @@ impl CloneCommand {
 	pub async fn execute<C: GitHubClient>(
 		client: C,
 		is_clone_all: bool,
+		username: Option<&str>,
 	) -> Result<(), reqwest::Error> {
 		println!();
 		let term = Term::stdout();
 		let repo = RepoRepository::new(client);
 
-		Output::loading(&term, "searching all repositories");
-		let result = repo.fetch().await;
+		let result = match username {
+			Some(username) => {
+				Output::loading(
+					&term,
+					&format!("searching {username}'s public repositories"),
+				);
+				repo.fetch_user(username).await
+			}
+			None => {
+				Output::loading(&term, "searching all repositories");
+				repo.fetch().await
+			}
+		};
 		Output::clear_last(&term);
 
 		match result {

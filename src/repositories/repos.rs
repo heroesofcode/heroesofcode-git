@@ -9,6 +9,8 @@ pub struct RepoResponse {
 	pub html_url: String,
 	pub archived: bool,
 	pub language: Option<String>,
+	#[serde(default)]
+	pub private: bool,
 }
 
 /// Fetches repository data from the GitHub API
@@ -26,5 +28,17 @@ impl<C: GitHubClient> RepoRepository<C> {
 		let url = format!("{}/orgs/heroesofcode/repos", self.client.base_url());
 		let repos: Vec<RepoResponse> = self.client.get_json(&url).await?;
 		Ok(repos.into_iter().filter(|r| !r.archived).collect())
+	}
+
+	/// Returns all public, non-archived repositories owned by the given user
+	pub async fn fetch_user(&self, username: &str) -> Result<Vec<RepoResponse>, reqwest::Error> {
+		let url = format!("{}/users/{username}/repos", self.client.base_url());
+		let repos: Vec<RepoResponse> = self.client.get_json(&url).await?;
+		Ok(
+			repos
+				.into_iter()
+				.filter(|r| !r.archived && !r.private)
+				.collect(),
+		)
 	}
 }

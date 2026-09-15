@@ -1,0 +1,43 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/users/joaolfp/repos"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "name": "dotfiles",
+        "html_url": "https://github.com/joaolfp/dotfiles",
+        "archived": false,
+        "language": "Shell",
+        "private": false
+      },
+      {
+        "name": "playground",
+        "html_url": "https://github.com/joaolfp/playground",
+        "archived": false,
+        "language": "Rust",
+        "private": false
+      },
+      {
+        "name": "old-project",
+        "html_url": "https://github.com/joaolfp/old-project",
+        "archived": true,
+        "language": "JavaScript",
+        "private": false
+      },
+      {
+        "name": "secret-notes",
+        "html_url": "https://github.com/joaolfp/secret-notes",
+        "archived": false,
+        "language": null,
+        "private": true
+      }
+    ],
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "fixedDelayMilliseconds": 2000
+  }
+}

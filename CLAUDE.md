@@ -38,6 +38,7 @@ hoc repos   # list all repositories
 hoc clone   # clone repositories (interactive)
 hoc all     # clone all repositories
 hoc pr      # show open pull requests
+hoc my      # clone joaolfp's public repositories (interactive)
 ```
 
 ## Architecture

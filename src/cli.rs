@@ -26,7 +26,13 @@ enum Command {
 	/// Show open pull requests
 	#[clap(visible_alias = "p")]
 	Pr,
+	/// Clone my public repositories (interactive)
+	#[clap(visible_alias = "m")]
+	My,
 }
+
+/// GitHub username whose public repositories `hoc my` clones
+const MY_USERNAME: &str = "joaolfp";
 
 pub struct Cli;
 
@@ -37,9 +43,10 @@ impl Cli {
 
 		match args.command {
 			Some(Command::Repos) => ListReposCommand::execute(client).await,
-			Some(Command::Clone) => CloneCommand::execute(client, false).await,
-			Some(Command::All) => CloneCommand::execute(client, true).await,
+			Some(Command::Clone) => CloneCommand::execute(client, false, None).await,
+			Some(Command::All) => CloneCommand::execute(client, true, None).await,
 			Some(Command::Pr) => ListPrsCommand::execute(client).await,
+			Some(Command::My) => CloneCommand::execute(client, false, Some(MY_USERNAME)).await,
 			None => {
 				println!("Run {}", "heroesofcode --help".blue());
 				Ok(())
