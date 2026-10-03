@@ -180,10 +180,10 @@ fn handle_clone_result(url: &str, name: &str, language: Option<&str>, term: &Ter
 	}
 }
 
-/// Clones a repository into the heroesofcode/<language> folder on the user's Desktop
+/// Clones a repository into the heroesofcode/<language> folder in the user's Documents directory
 fn clone_repo(url: &str, language: Option<&str>) -> Result<std::path::PathBuf, String> {
-	let heroesofcode_dir = dirs::desktop_dir()
-		.ok_or("Could not find Desktop")?
+	let heroesofcode_dir = dirs::document_dir()
+		.ok_or("Could not find Documents")?
 		.join("heroesofcode");
 
 	let base = match language {

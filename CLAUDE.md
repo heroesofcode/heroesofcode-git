@@ -47,7 +47,7 @@ hoc my      # clone joaolfp's public repositories (interactive)
 - `src/lib.rs` — module declarations
 - `src/cli.rs` — command router using `clap::Subcommand`
 - `src/repos.rs` — fetch and list repositories via GitHub API
-- `src/clone.rs` — interactive/batch clone logic, resolves Desktop directory
+- `src/clone.rs` — interactive/batch clone logic, resolves Documents directory
 - `src/pull_requests.rs` — fetch and list open PRs across org
 - `src/network.rs` — `reqwest::Client` wrapper
 - `src/cli_output.rs` — terminal output helpers (success, error, loading)
