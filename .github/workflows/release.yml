@@ -16,7 +16,7 @@ jobs:
       contains(github.event.head_commit.message, 'Prepare version to')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: true
@@ -32,7 +32,6 @@ jobs:
       - name: Create tag only (no release)
         if: steps.vars.outputs.version != ''
         run: |
-          VERSION="${{ steps.vars.outputs.version }}"
           TAG="v${VERSION}"
 
           echo "Creating tag: $TAG"
@@ -48,4 +47,5 @@ jobs:
           git tag "$TAG"
           git push origin "$TAG"
         env:
+          VERSION: ${{ steps.vars.outputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

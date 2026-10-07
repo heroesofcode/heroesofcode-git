@@ -29,6 +29,7 @@ mise fmt
 mise check
 mise release
 mise doc
+mise zizmor      # audit GitHub Actions workflows
 ```
 
 ## CLI Usage
@@ -70,4 +71,5 @@ Integration tests live in `tests/` and use `httpmock` to mock HTTP servers. Unit
 - **CI.yml** — runs on PRs: build + test via `mise`
 - **autofix.yml** — runs clippy fixes + rustfmt, auto-commits on PRs
 - **Release.yml** — creates git tag when commit message contains "Prepare version to"
+- **zizmor.yml** — static security analysis of GitHub Actions workflows (results in Code Scanning)
 - Renovate auto-merges dependency updates on green CI
