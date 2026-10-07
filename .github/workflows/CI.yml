@@ -33,11 +33,10 @@ jobs:
 
       - name: Report CI result in PR
         if: always()
-        uses: actions/github-script@450193c5abd4cdb17ba9f3ffcfe8f635c4bb6c2a
-        with:
-          script: |
-            const report = require('./.github/scripts/report-ci.js');
-            await report({ github, context, process });
+        run: ./.github/scripts/report-ci.sh
         env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
           TEST_OUTCOME: ${{ steps.tests.outcome }}
