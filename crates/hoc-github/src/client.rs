@@ -1,7 +1,7 @@
 use reqwest::{Client, header};
 use serde::de::DeserializeOwned;
 
-use super::GitHubClient;
+use crate::GitHubClient;
 
 /// Lightweight HTTP client wrapper using `reqwest`
 pub struct Network {

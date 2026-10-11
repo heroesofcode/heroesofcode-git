@@ -1,14 +1,16 @@
-[package]
-name = "hoc"
+[workspace]
+members = ["crates/*"]
+
+[workspace.package]
 version = "0.15.0"
 edition = "2024"
 license = "MIT"
 authors = ["João Lucas <joaolucasfp2001@gmail.com>"]
-description = "CLI designed to manage and clone repositories from the Heroes of Code organization."
-readme = "README.md"
 repository = "https://github.com/heroesofcode/heroesofcode-git"
 
-[dependencies]
+[workspace.dependencies]
+hoc-github = { path = "crates/hoc-github" }
+hoc-ui = { path = "crates/hoc-ui" }
 reqwest = { version = "0.13.0", features = ["json"] }
 tokio = { version = "1.48.0", features = ["full"] }
 serde = { version = "1.0.228", features = ["derive"] }
@@ -19,7 +21,27 @@ console = "0.16.2"
 colored = "3.0.0"
 dirs = "7.0.0"
 xx = "2.3.1"
-
-[dev-dependencies]
 httpmock = "0.8.2"
 serde_json = "1.0.145"
+
+[package]
+name = "hoc"
+description = "CLI designed to manage and clone repositories from the Heroes of Code organization."
+readme = "README.md"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+hoc-github.workspace = true
+hoc-ui.workspace = true
+reqwest.workspace = true
+tokio.workspace = true
+clap.workspace = true
+demand.workspace = true
+console.workspace = true
+colored.workspace = true
+dirs.workspace = true
+xx.workspace = true

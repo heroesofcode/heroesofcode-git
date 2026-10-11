@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::github::GitHubClient;
+use crate::GitHubClient;
 
 /// GitHub repository response model
 #[derive(Debug, Serialize, Deserialize)]
