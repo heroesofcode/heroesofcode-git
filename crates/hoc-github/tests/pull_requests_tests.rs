@@ -1,4 +1,6 @@
-use hoc::repositories::pull_requests::{PullRequestItems, PullRequestResponse, PullRequestUser};
+use hoc_github::repositories::pull_requests::{
+	PullRequestItems, PullRequestResponse, PullRequestUser,
+};
 
 #[test]
 fn test_pull_request_response_deserialization() {

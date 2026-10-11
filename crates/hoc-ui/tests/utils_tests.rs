@@ -1,4 +1,4 @@
-use hoc::utils::Utils;
+use hoc_ui::utils::Utils;
 
 #[test]
 fn test_table_with_single_row() {

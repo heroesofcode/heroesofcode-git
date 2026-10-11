@@ -1,0 +1,14 @@
+[package]
+name = "hoc-ui"
+description = "Terminal output helpers for the hoc CLI."
+publish = false
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+colored.workspace = true
+comfy-table.workspace = true
+console.workspace = true

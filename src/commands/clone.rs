@@ -4,11 +4,11 @@ use console::Term;
 use demand::{DemandOption, MultiSelect, Theme};
 use xx::git::{self, CloneOptions};
 
-use crate::{
-	github::GitHubClient,
-	output::Output,
+use hoc_github::{
+	GitHubClient,
 	repositories::repos::{RepoRepository, RepoResponse},
 };
+use hoc_ui::output::Output;
 
 static DRACULA_THEME: LazyLock<Theme> = LazyLock::new(Theme::dracula);
 

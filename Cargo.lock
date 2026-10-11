@@ -784,16 +784,34 @@ version = "0.15.0"
 dependencies = [
  "clap",
  "colored",
- "comfy-table",
  "console",
  "demand",
  "dirs",
+ "hoc-github",
+ "hoc-ui",
+ "reqwest",
+ "tokio",
+ "xx",
+]
+
+[[package]]
+name = "hoc-github"
+version = "0.15.0"
+dependencies = [
  "httpmock",
  "reqwest",
  "serde",
  "serde_json",
  "tokio",
- "xx",
+]
+
+[[package]]
+name = "hoc-ui"
+version = "0.15.0"
+dependencies = [
+ "colored",
+ "comfy-table",
+ "console",
 ]
 
 [[package]]

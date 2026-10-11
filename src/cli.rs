@@ -1,9 +1,10 @@
 use clap::{Parser, Subcommand};
 use colored::Colorize;
 
-use crate::{
-	commands::{clone::CloneCommand, list_prs::ListPrsCommand, list_repos::ListReposCommand},
-	github::client::Network,
+use hoc_github::client::Network;
+
+use crate::commands::{
+	clone::CloneCommand, list_prs::ListPrsCommand, list_repos::ListReposCommand,
 };
 
 #[derive(Parser)]

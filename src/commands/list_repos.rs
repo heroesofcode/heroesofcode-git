@@ -1,11 +1,10 @@
 use console::Term;
 
-use crate::{
-	github::GitHubClient,
-	output::Output,
+use hoc_github::{
+	GitHubClient,
 	repositories::repos::{RepoRepository, RepoResponse},
-	utils::Utils,
 };
+use hoc_ui::{output::Output, utils::Utils};
 
 pub struct ListReposCommand;
 

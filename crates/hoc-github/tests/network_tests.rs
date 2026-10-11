@@ -1,10 +1,10 @@
 use httpmock::Method::GET;
 use httpmock::MockServer;
 
-use hoc::github::GitHubClient;
-use hoc::github::client::Network;
-use hoc::repositories::pull_requests::PullRequestItems;
-use hoc::repositories::repos::RepoResponse;
+use hoc_github::GitHubClient;
+use hoc_github::client::Network;
+use hoc_github::repositories::pull_requests::PullRequestItems;
+use hoc_github::repositories::repos::RepoResponse;
 
 #[tokio::test]
 async fn test_get_json_success() {

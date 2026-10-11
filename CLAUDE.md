@@ -8,17 +8,17 @@
 
 ```bash
 # Build
-cargo build              # debug build
+cargo build --workspace  # debug build
 cargo build --release    # release build
 
 # Run
 cargo run                # run the CLI
 
 # Test
-cargo test
+cargo test --workspace
 
 # Lint & Format
-cargo clippy --all-targets --all-features
+cargo clippy --workspace --all-targets --all-features
 cargo fmt --all -- --check
 
 # Via mise task runner
@@ -44,19 +44,19 @@ hoc my      # clone joaolfp's public repositories (interactive)
 
 ## Architecture
 
+Cargo workspace. The root package is the `hoc` binary; libraries live in `crates/`.
+
 - `src/main.rs` — entry point, sets up tokio async runtime
-- `src/lib.rs` — module declarations
 - `src/cli.rs` — command router using `clap::Subcommand`
-- `src/repos.rs` — fetch and list repositories via GitHub API
-- `src/clone.rs` — interactive/batch clone logic, resolves Documents directory
-- `src/pull_requests.rs` — fetch and list open PRs across org
-- `src/network.rs` — `reqwest::Client` wrapper
-- `src/cli_output.rs` — terminal output helpers (success, error, loading)
-- `src/utils.rs` — generic table rendering with `comfy-table`
+- `src/commands/` — `clone`, `list_repos`, `list_prs` command implementations
+- `crates/hoc-github` — `GitHubClient` trait (`lib.rs`), `reqwest` wrapper `Network` (`client.rs`), and `repositories/` (`RepoRepository`, `PrRepository` + response models)
+- `crates/hoc-ui` — terminal output helpers (`output.rs`) and generic `comfy-table` rendering (`utils.rs`)
+
+Shared dependency versions are declared once in `[workspace.dependencies]` of the root `Cargo.toml`.
 
 ## Testing
 
-Integration tests live in `tests/` and use `httpmock` to mock HTTP servers. Unit tests (deserialization) live in module files. Test naming convention: `test_<feature>_<scenario>`.
+Integration tests live in each crate's `tests/` (e.g. `crates/hoc-github/tests/`) and use `httpmock` to mock HTTP servers. Unit tests (deserialization) live in module files. Test naming convention: `test_<feature>_<scenario>`.
 
 ## Code Conventions
 

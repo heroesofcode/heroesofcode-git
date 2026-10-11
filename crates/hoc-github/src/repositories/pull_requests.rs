@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::github::GitHubClient;
+use crate::GitHubClient;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PullRequestItems {

@@ -1,12 +1,11 @@
 use colored::Colorize;
 use console::Term;
 
-use crate::{
-	github::GitHubClient,
-	output::Output,
+use hoc_github::{
+	GitHubClient,
 	repositories::pull_requests::{PrRepository, PullRequestResponse},
-	utils::Utils,
 };
+use hoc_ui::{output::Output, utils::Utils};
 
 pub struct ListPrsCommand;
 
