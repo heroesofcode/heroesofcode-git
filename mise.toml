@@ -1,5 +1,5 @@
 [tools]
-zizmor = "1.31.0"
+zizmor = "1.31.1"
 
 [tasks.lint]
 run = "cargo clippy --workspace --all-targets --all-features"
